@@ -44,6 +44,48 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ---------------------------------------------------------------
+# ENSURE DATABASE + TABLES EXIST (needed on Render free tier)
+# ---------------------------------------------------------------
+def ensure_database_exists():
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS inventory (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_name TEXT,
+            brand TEXT,
+            model TEXT,
+            price REAL,
+            category TEXT,
+            condition TEXT,
+            photo TEXT,
+            status TEXT DEFAULT 'Available',
+            sold_date TEXT
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS reservations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            inventory_id INTEGER,
+            customer_name TEXT,
+            phone TEXT,
+            email TEXT,
+            message TEXT,
+            reservation_date TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+ensure_database_exists()
+
+# ---------------------------------------------------------------
 # LOGIN REQUIRED DECORATOR
 # ---------------------------------------------------------------
 def login_required(f):
