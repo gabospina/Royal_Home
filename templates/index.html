@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Appliance Outlet</title>
+    <link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+<header>
+<nav>
+<div class="logo">
+Discount Appliance Outlet
+</div>
+<ul>
+<li><a href="#about">About</a></li>
+<li><a href="#products">Products</a></li>
+<li><a href="#gallery">Gallery</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+
+</nav>
+</header>
+<section class="hero">
+    <img src="{{ url_for('static', filename='images/store.jpg') }}" alt="Discount Appliance Outlet Store Front">
+    <div class="hero-content">
+        <h1>Quality Appliances at Discount Prices</h1>
+        <p>
+        Save hundreds on refrigerators, washers, dryers,
+        ranges, and more.
+        </p>
+        <a href="tel:+18777756257" class="btn">Call Us Today - (877) 775-6257</a>
+    </div>
+</section>
+
+<section id="about" class="about">
+    <h2 class="section-title">About Us</h2>
+    <p style="text-align:center;max-width:900px;margin:auto;">
+    For more than 5 years, we have helped families save money
+    on quality appliances. We specialize in refrigerators,
+    washers, dryers, ovens, and other household appliances
+    that may have minor cosmetic imperfections such as small dents
+    or scratches. These imperfections do not affect performance,
+    allowing our customers to purchase premium appliances at
+    substantially reduced prices.
+    </p>
+</section>
+
+<section>
+    <h2 class="section-title">Why Customers Choose Us</h2>
+    <div class="features">
+        <div class="feature-box">
+            <h3>Huge Savings</h3>
+            <p>Save hundreds compared to traditional retail stores.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Trusted Brands</h3>
+            <p>Quality appliances from leading manufacturers.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Local Business</h3>
+            <p>Proudly serving our community for over five years.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Inventory Changes Weekly</h3>
+            <p>New deals arrive regularly.</p>
+        </div>
+    </div>
+</section>
+
+<section id="products">
+    <h2 class="section-title">Products We Carry</h2>
+    <div class="features">
+        <div class="feature-box">
+            <h3>Refrigerators</h3>
+            <p>French Door, Side-by-Side and Top Freezer Models.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Washers</h3>
+            <p>Front Load and Top Load Machines.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Dryers</h3>
+            <p>Electric and Gas Dryers Available.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>Ranges & Ovens</h3>
+            <p>Upgrade your kitchen for less.</p>
+        </div>
+    </div>
+</section>
+
+<section id="gallery">
+
+    <h2 class="section-title">
+        Featured Inventory
+    </h2>
+
+    <div class="gallery">
+
+        {% for item in inventory %}
+
+        <div class="inventory-card">
+
+            <img
+            src="{{ url_for(
+                'static',
+                filename='images/uploads/' + item[7]
+            ) }}"
+            alt="{{ item[1] }}">
+            <h3>{{ item[1] }}</h3>
+            <p>${{ item[4] }}</p>
+            <a
+            href="/reserve/{{ item[0] }}"
+            class="inventory-btn">
+                Reserve Appliance
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</section>
+
+<section class="contact" id="contact">
+    <h2 class="section-title" style="color:white;">
+    Visit Our Store
+    </h2>
+    <div class="contact-details">
+        <h3>The Royal Home</h3>
+        <h3>Discount Appliance Outlet</h3>
+        <p>3237 Sources Blvd, DDO, Quebec, H9B 1Z6</p>
+        <a href="tel:+18777756257" class="btn">Call Us Today - (877) 775-6257</a>
+        <p>--</p>
+        <p>info@theroyalhome.ca</p>
+        <p>Monday - Saturday: 9:00 AM - 6:00 PM</p>
+        <p>Sunday: Closed</p>
+        <br>
+        
+    </div>
+
+</section>
+
+<footer>
+    <p>
+        © 2026 Discount Appliance Outlet. All Rights <a href="#" class="hidden-link" id="reservedLink">Reserved</a>.
+    </p>
+</footer>
+
+<!-- MANAGER LOGIN MODAL -->
+<div id="managerLoginModal" class="custom-modal">
+
+    <div class="modal-content">
+
+        <h2>Manager Login</h2>
+
+        <p id="loginError" style="color: #cc0000; display: none;">
+            Invalid username or password.
+        </p>
+
+        <form id="managerLoginForm" method="POST" action="/login">
+
+            <label for="modal_username">Username</label>
+            <input
+                type="text"
+                id="modal_username"
+                name="username"
+                required
+                autocomplete="username">
+
+            <label for="modal_password">Password</label>
+            <input
+                type="password"
+                id="modal_password"
+                name="password"
+                required
+                autocomplete="current-password">
+
+            <div class="modal-buttons">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeLoginModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="confirm-btn">
+                    Login
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+<script>
+
+document.getElementById("reservedLink").addEventListener("click", function(e) {
+    e.preventDefault();
+    document.getElementById("managerLoginModal").style.display = "flex";
+    document.getElementById("loginError").style.display = "none";
+    document.getElementById("modal_username").value = "";
+    document.getElementById("modal_password").value = "";
+    document.getElementById("modal_username").focus();
+});
+
+function closeLoginModal() {
+    document.getElementById("managerLoginModal").style.display = "none";
+}
+
+window.addEventListener("click", function(e) {
+    const modal = document.getElementById("managerLoginModal");
+    if (e.target === modal) closeLoginModal();
+});
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeLoginModal();
+});
+
+// AJAX submit
+document.getElementById("managerLoginForm").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const form = e.target;
+    const errorBox = document.getElementById("loginError");
+
+    fetch("/login", {
+        method: "POST",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: new FormData(form)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            errorBox.textContent = data.error || "Login failed.";
+            errorBox.style.display = "block";
+        }
+    })
+    .catch(() => {
+        errorBox.textContent = "Server error. Please try again.";
+        errorBox.style.display = "block";
+    });
+
+});
+
+</script>
+<script
+    src="{{ url_for('static', filename='js/script.js') }}">
+</script>
+</body>
+</html>

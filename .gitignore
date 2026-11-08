@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+database/inventory.db
+static/images/uploads/*
+!static/images/uploads/.gitkeep
+inventory_export.xlsx

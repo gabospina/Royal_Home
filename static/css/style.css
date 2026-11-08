@@ -1,0 +1,730 @@
+/* body{
+    background:red !important;
+} */
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    line-height:1.6;
+    color:#333;
+    background:#ffffff;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+    background:#003366;
+    color:white;
+    padding:20px 5%;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+}
+
+nav ul li{
+    margin-left:20px;
+}
+
+nav ul li a{
+    color:white;
+    text-decoration:none;
+}
+
+nav ul li a:hover{
+    color:#ff6600;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+    position:relative;
+    height:650px;
+    overflow:hidden;
+}
+
+.hero img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.hero-content{
+    position:absolute;
+    top:60%;
+    left:50%;
+
+    transform:translate(-50%, -50%);
+
+    width:60%;
+    max-width:500px;
+
+    text-align:center;
+
+    background:rgba(0,0,0,.10);
+
+    color:white;
+
+    padding:30px;
+
+    border-radius:10px;
+}
+
+.hero h1{
+    font-size:48px;
+    font-weight:bold;
+    color:white;
+}
+
+.hero p{
+    margin-top:15px;
+    font-size:22px;
+    color:white;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn{
+    display:inline-block;
+    margin-top:20px;
+    background:#ff6600;
+    color:white;
+    padding:14px 30px;
+    text-decoration:none;
+    border-radius:5px;
+}
+
+.btn:hover{
+    background:#e65c00;
+}
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+
+section{
+    padding:30px 10%;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:10px;
+    color:#003366;
+}
+
+.about{
+    background:#f4f4f4;
+}
+
+/* =====================================================
+   FEATURES
+===================================================== */
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.feature-box{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+    text-align:center;
+}
+
+/* =====================================================
+   GALLERY
+===================================================== */
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.gallery img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+/* =====================================================
+   CONTACT
+===================================================== */
+
+.contact{
+    background:#003366;
+    color:white;
+}
+
+.contact-details{
+    text-align:center;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+    text-align:center;
+    background:#111;
+    color:white;
+    padding:20px;
+}
+
+/* =====================================================
+   DASHBOARD FORM
+===================================================== */
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+    font-weight:bold;
+    color:#003366;
+}
+
+input,
+select,
+textarea{
+    width:300px;
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing:border-box;
+}
+
+textarea{
+    resize:both;
+    min-height:100px;
+    min-width:350px;
+}
+
+/* =====================================================
+   UPLOAD BUTTON
+===================================================== */
+
+.upload-btn{
+    background:#ff6600;
+    color:white;
+
+    padding:12px 20px;
+
+    border:none;
+    border-radius:5px;
+
+    cursor:pointer;
+
+    margin-top:15px;
+}
+
+.upload-btn:hover{
+    background:#e65c00;
+}
+
+/* Dashboar style */
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f4f4f4;
+    padding:30px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    color:#003366;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.delete-btn{
+    display:block;
+    width:100%;
+    padding:10px;
+    border:none;
+    background:#cc0000;
+    color:white;
+    cursor:pointer;
+}
+
+.upload-btn{
+    background:#ff6600;
+    color:white;
+    padding:12px 20px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* Category */
+
+.category-badge{
+    display:inline-block;
+
+    background:#ff6600;
+
+    color:white;
+
+    padding:6px 15px;
+
+    font-size:12px;
+    font-weight:bold;
+
+    margin:10px 0;
+
+    text-transform:uppercase;
+
+    border-radius:0;
+
+    letter-spacing:1px;
+}
+
+/* Upload button */
+
+input[type="file"]{
+    width:auto;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.upload-btn{
+    display:inline-block;
+    vertical-align:middle;
+    margin-top:0;
+    margin-left:10px;
+}
+
+/* =========== Upload New Appliance Photo ====================*/
+
+.form-row{
+    display:flex;
+    gap:15px;
+    margin-bottom:10px;
+}
+
+.form-group{
+    flex:0 0 250px;
+}
+
+.form-group input,
+.form-group select{
+    width:220px;
+    padding:6px;
+}
+
+/* Input boxes in Upload New Appliance Photo */
+#product_name,
+#brand,
+#model,
+#price,
+#category{
+    width:220px;
+    padding:6px;
+}
+
+/* =====================================================
+   INVENTORY CARDS
+===================================================== */
+
+.inventory-card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    text-align:center;
+}
+
+.inventory-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.inventory-card h3{
+    padding:10px;
+}
+
+.inventory-card p{
+    padding-bottom:15px;
+    font-weight:bold;
+    color:#ff6600;
+}
+
+/* Inventory */
+.inventory-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+}
+
+.inventory-item{
+    border:1px solid #ddd;
+    border-radius:10px;
+    overflow:hidden;
+    background:white;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.inventory-content{
+    flex-grow:1;
+}
+
+.inventory-item form{
+    margin-top:auto;
+}
+
+
+.inventory-item img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.inventory-item h3{
+    padding:10px;
+    text-align:center;
+}
+
+/* Inventory List button */
+.dashboard-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.dashboard-header h1{
+    margin:0;
+}
+
+.inventory-btn:hover{
+    background:#e65c00;
+}
+
+/* Inventory */
+.report-header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.company-logo{
+    width:90px;
+    height:auto;
+    display:block;
+    margin:0 auto 10px auto;
+}
+
+/* ADD EXCEL EXPORT BUTTON STYLE */
+.export-btn{
+    display:inline-block;
+    background:#28a745;
+    color:white;
+    text-decoration:none;
+    padding:10px 20px;
+    border-radius:5px;
+    margin-right:10px;
+    font-weight:bold;
+}
+
+.export-btn:hover{
+    background:#218838;
+}
+
+/* missing photo */
+
+.missing-photo{
+
+    background:#ffc107;
+
+    color:#000;
+
+    padding:6px;
+
+    margin:10px;
+
+    text-align:center;
+
+    font-weight:bold;
+}
+
+/* upload photo */
+.upload-photo-btn{
+
+    display:block;
+
+    width:100%;
+
+    padding:10px;
+
+    background:#28a745;
+
+    color:white;
+
+    text-align:center;
+
+    text-decoration:none;
+}
+
+/* =====================================================
+   EDIT / SOLD / DELETE BUTTONS
+===================================================== */
+
+.edit-btn,
+.sold-btn,
+.delete-btn{
+    display:block;
+    width:100%;
+    padding:8px;
+    border:none;
+    cursor:pointer;
+    font-size:14px;
+    text-align:center;
+}
+
+/* =====================================================
+   EDIT / SOLD / DELETE BACKGROUND
+===================================================== */
+
+.edit-btn{
+    background:#0066cc;
+    color:white;
+}
+
+.sold-btn{
+    background:#ff9800;
+    color:white;
+}
+
+.delete-btn{
+    background:#cc0000;
+    color:white;
+}
+
+.edit-btn:hover{
+    background:#589fe6;
+}
+
+.sold-btn:hover{
+    background:#3fe65b;
+}
+
+.delete-btn:hover{
+    background:#ec2b2b;
+}
+
+/* Dashboard.html - Add spacing between the inventory list buttons  */
+.inventory-btn{
+    display:inline-block;
+    background:#ff6600;
+    color:white;
+    text-decoration:none;
+    padding:10px 20px;
+    border-radius:5px;
+    margin-left:10px;
+    font-weight:bold;
+}
+
+.inventory-btn:hover{
+    background:#e65c00;
+}
+
+/* Modal Styling */
+.custom-modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.6);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-content{
+    background:white;
+    width:450px;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.modal-buttons{
+    margin-top:20px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+.cancel-btn{
+    background:#999;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+.confirm-btn{
+    background:#ff9800;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+.delete-confirm-btn{
+    background:#cc0000;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+/*  */
+.import-form{
+    margin-top:20px;
+}
+
+.import-form input[type="file"]{
+    display:inline-block;
+    margin-right:10px;
+}
+
+.inventory-btn,
+.export-btn,
+.print-btn,
+.upload-btn{
+    margin-right:10px;
+    margin-bottom:10px;
+}
+
+/* sold_inventory.html */
+.restore-btn{
+    display:block;
+    width:100%;
+    padding:10px;
+    background:#28a745;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.restore-btn:hover{
+    background:#218838;
+}
+
+/* ======================================
+   DASHBOARD STATISTICS
+====================================== */
+.stats-container{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+
+.stat-card{
+    flex:0 0 120px;
+    background:white;
+    border-radius:8px;
+    padding:10px;
+    text-align:center;
+    box-shadow:0 2px 4px rgba(0,0,0,.1);
+}
+
+.stat-card h2{
+    font-size:20px;
+    color:#003366;
+    margin-bottom:4px;
+}
+
+.stat-card p{
+    font-size:12px;
+    font-weight:bold;
+    color:#555;
+    margin:0;
+}
+
+/* RESERVED link */
+.hidden-link {
+    color: inherit;           /* same color as surrounding text */
+    text-decoration: none;    /* no underline */
+    cursor: default;          /* normal arrow cursor, not pointer */
+}
+
+.hidden-link:hover {
+    color: inherit;           /* stays same color on hover */
+    text-decoration: none;
+}
+
+/* flash messages */
+.flash-msg {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+

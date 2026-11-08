@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Inventory List</title>
+<link
+    rel="stylesheet"
+    href="{{ url_for(
+        'static',
+        filename='css/style.css'
+    ) }}">
+<style>
+
+body{
+    font-family:Arial, sans-serif;
+    padding:20px;
+}
+
+h1{
+    color:#003366;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th{
+    background:#003366;
+    color:white;
+}
+
+th,
+td{
+    border:1px solid #cccccc;
+    padding:10px;
+    text-align:left;
+}
+
+.print-btn{
+    background:#ff6600;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    cursor:pointer;
+    margin-bottom:20px;
+}
+
+@media print{
+
+    .print-btn{
+        display:none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="dashboard-header">
+    <h1>Inventory List</h1>
+    <div>
+        <a href="/dashboard" class="inventory-btn">Return to Dashboard</a>
+        <a href="/logout" class="inventory-btn">Logout</a>
+    </div>
+</div>
+
+<div class="toolbar">
+    <a href="/export-excel" class="export-btn">Export Excel</a>
+    <button class="print-btn" onclick="window.open('/inventory-list-print', '_blank')">
+        Print Inventory
+    </button>
+    <form method="POST" action="/import-excel" enctype="multipart/form-data" class="import-form">
+        <input type="file" name="excel_file" accept=".xlsx,.xls" required>
+        <button class="upload-btn" type="submit">Import Excel</button>
+    </form>
+</div>
+
+<h1>Inventory List</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in inventory %}
+        <tr>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>${{ item[4] }}</td>
+            <td>{{ item[5] }}</td>
+            <td>{{ item[8] }}</td>
+        </tr>
+        {% endfor %}
+
+            <!-- Single combined totals row — spacer padding inside the row -->
+            <tr style="background: #f0f0f0; font-weight: bold; border-top: 4px solid #999;">
+                <td colspan="3" style="text-align: left; vertical-align: middle;
+                                    padding-top: 15px;">
+                    Total Items: {{ total_items }}
+                </td>
+                <td style="text-align: left; vertical-align: middle; border-left: 2px solid #999;
+                        padding-top: 15px;">
+                    ${{ "%.2f"|format(total_price) }}
+                </td>
+                <td colspan="2" style="border: none; padding-top: 10px;"></td>
+            </tr>
+
+    </tbody>
+
+</table>
+
+</body>
+</html>

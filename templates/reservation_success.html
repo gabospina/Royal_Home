@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Submitted</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card" style="text-align: center;">
+
+        <h1>✅ Reservation Submitted</h1>
+
+        <p>
+            Thank you, <strong>{{ customer_name }}</strong>.
+            Your reservation for <strong>{{ item_name }}</strong> has been received.
+        </p>
+
+        <p>
+            We will contact you at <strong>{{ phone }}</strong>
+            to confirm availability and pickup details.
+        </p>
+
+        <br>
+
+        <a href="/" class="upload-btn">Back to Homepage</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

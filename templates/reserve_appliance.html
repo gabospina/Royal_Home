@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Appliance — {{ item[1] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Reserve Appliance</h1>
+
+        {% if item %}
+
+            <h2>{{ item[1] }}</h2>
+
+            <p><strong>Brand:</strong> {{ item[2] }}</p>
+            <p><strong>Model:</strong> {{ item[3] }}</p>
+            <p><strong>Price:</strong> ${{ item[4] }}</p>
+            <p><strong>Condition:</strong> {{ item[6] }}</p>
+
+            <form method="POST" action="/submit-reservation/{{ item[0] }}">
+
+                <label for="customer_name">Customer Name</label>
+                <input type="text" id="customer_name" name="customer_name" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+
+                <button class="upload-btn" type="submit">Submit Reservation</button>
+
+            </form>
+
+        {% else %}
+
+            <p>Sorry — that appliance could not be found. It may have already been sold.</p>
+            <a href="/" class="inventory-btn">Back to Homepage</a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

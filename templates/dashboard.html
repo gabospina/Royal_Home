@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="dashboard-header">
+        <h1>Inventory Dashboard</h1>
+        <div>
+            <a
+                href="/inventory-list"
+                class="inventory-btn">
+                Inventory List
+            </a>
+            <a
+                href="/sold-inventory"
+                class="inventory-btn">
+                Sold Inventory
+            </a>
+            <a
+                href="/logout"
+                class="inventory-btn">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+
+            <h2>{{ available_count }}</h2>
+
+            <p>Available</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>{{ sold_count }}</h2>
+
+            <p>Sold</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>{{ total_count }}</h2>
+
+            <p>Total</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Upload New Appliance Photo</h2>
+        
+        <form
+            method="POST"
+            action="/upload"
+            enctype="multipart/form-data">
+
+            <div class="form-row">
+
+            <div class="form-group">
+                <label for="product_name">Product Name</label>
+                <input
+                    type="text"
+                    id="product_name"
+                    name="product_name">
+            </div>
+
+            <div class="form-group">
+                <label for="brand">Brand</label>
+                <input
+                    type="text"
+                    id="brand"
+                    name="brand">
+            </div>
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input
+                    type="text"
+                    id="model"
+                    name="model">
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input
+                    type="number"
+                    step="0.01"
+                    id="price"
+                    name="price">
+            </div>
+
+        </div>
+
+            <label for="category">Category</label>
+            <select
+                id="category"
+                name="category">
+
+                <option value="">-- Select Category --</option>
+                <option>Refrigerator</option>
+                <option>Washer</option>
+                <option>Dryer</option>
+                <option>Oven</option>
+
+            </select>
+
+            <label for="condition">Condition</label>
+            <textarea
+                id="condition"
+                name="condition"
+                rows="4"></textarea>
+
+            <label for="photo">Photo</label>
+
+            <input
+                type="file"
+                id="photo"
+                name="photo"
+                accept="image/*"
+                required>
+
+            <button
+                class="upload-btn"
+                type="submit">
+                Upload Appliance
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="card">
+
+    <h2>Current Inventory</h2>
+
+        {% if inventory %}
+
+            <div class="inventory-grid">
+
+                {% for item in inventory %}
+
+                <div class="inventory-item">
+
+                {% if item[7] == 'no-image.png' %}
+                    <img
+                    src="{{ url_for(
+                        'static',
+                        filename='images/no-image.png'
+                    ) }}"
+                    alt="No Image">
+
+                {% else %}
+
+                    <img
+                    src="{{ url_for(
+                        'static',
+                        filename='images/uploads/' + item[7]
+                    ) }}"
+                    alt="{{ item[1] }}">
+
+                {% endif %}
+
+                    <div class="inventory-content">
+
+                        <div class="category-badge">
+                            {{ item[5] }}
+                        </div>
+
+                        <h3>{{ item[1] }}</h3>
+
+                        <p><strong>Brand:</strong> {{ item[2] }}</p>
+
+                        <p><strong>Model:</strong> {{ item[3] }}</p>
+
+                        <p><strong>Price:</strong> ${{ item[4] }}</p>
+
+                        <p><strong>Condition:</strong> {{ item[6] }}</p>
+                        <p><strong>Status:</strong> {{ item[8] }}</p>
+
+                        {% if item[7] == 'no-image.png' %}
+                            <div class="missing-photo">
+                                ⚠ Photo Needed
+                            </div>
+
+                            <a
+                                href="/upload-photo/{{ item[0] }}"
+                                class="upload-photo-btn">
+
+                                Upload Photo
+
+                            </a>
+                        {% endif %}
+                    </div>
+
+                <a
+                    href="/edit_inventory/{{ item[0] }}"
+                    class="edit-btn">
+                    Edit
+                </a>
+
+                <form
+                    method="POST"
+                    action="/mark-sold/{{ item[0] }}"
+                    onsubmit="return openSoldModal(this)">
+                    <button
+                        class="sold-btn"
+                        type="submit">
+                        Sold
+                    </button>
+
+                </form>
+
+                <form
+                    method="POST"
+                    action="/delete/{{ item[7] }}"
+                    onsubmit="return openDeleteModal(this)">
+                    <button
+                        class="delete-btn"
+                        type="submit">
+                        Delete
+                    </button>
+                </form>
+
+            </div>
+
+                {% endfor %}
+
+            </div>
+
+    {% else %}
+
+        <p>No inventory photos uploaded yet.</p>
+
+    {% endif %}
+</div>
+
+<!-- SOLD MODAL -->
+
+<div id="soldModal" class="custom-modal">
+
+    <div class="modal-content">
+
+        <h2>Mark Product as Sold</h2>
+
+        <p>
+            This product will be removed from Current Inventory
+            and stored in Sold Inventory for future reference.
+        </p>
+
+        <div class="modal-buttons">
+
+            <button
+                class="cancel-btn"
+                onclick="closeSoldModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="confirm-btn"
+                id="confirmSoldBtn">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- DELETE MODAL -->
+
+<div id="deleteModal" class="custom-modal">
+
+    <div class="modal-content">
+
+        <h2>Delete Product</h2>
+
+        <p>
+            This action will permanently remove
+            the product from the inventory.
+
+        </p>
+
+        <div class="modal-buttons">
+
+            <button
+                class="cancel-btn"
+                onclick="closeDeleteModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="delete-confirm-btn"
+                id="confirmDeleteBtn">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+let soldForm = null;
+let deleteForm = null;
+
+function openSoldModal(form){
+
+    soldForm = form;
+
+    document
+        .getElementById("soldModal")
+        .style.display = "flex";
+
+    return false;
+}
+
+function closeSoldModal(){
+
+    document
+        .getElementById("soldModal")
+        .style.display = "none";
+}
+
+document
+.getElementById("confirmSoldBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        soldForm.submit();
+    }
+);
+
+function openDeleteModal(form){
+
+    deleteForm = form;
+
+    document
+        .getElementById("deleteModal")
+        .style.display = "flex";
+
+    return false;
+}
+
+function closeDeleteModal(){
+
+    document
+        .getElementById("deleteModal")
+        .style.display = "none";
+}
+
+document
+.getElementById("confirmDeleteBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        deleteForm.submit();
+    }
+);
+
+</script>
+</body>
+</html>
