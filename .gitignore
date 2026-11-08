@@ -5,3 +5,12 @@ database/inventory.db
 static/images/uploads/*
 !static/images/uploads/.gitkeep
 inventory_export.xlsx
+
+inventory.db
+*.db
+*.sqlite
+*.sqlite3
+* copy.py
+* copy.html
+*.bak
+*.old
