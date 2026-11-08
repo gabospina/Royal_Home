@@ -16,3 +16,99 @@ scrypt:32768:8:1$uQqc4NQg7OVJZlYS$b8bb055b3f364f44481e386beafe28ef70de583dd3a21d
 GitHUb
 
 https://github.com/gabospina/Royal_Home.git
+
+============
+
+With your site functional, the next step for Royal Home is to focus on **local visibility and trust-building**. For a discount appliance outlet,
+"marketing and commercial" means getting found by local customers and converting them once they arrive.
+
+Here is a prioritized roadmap based on what works for appliance retailers.
+
+### 🎯 Priority 1: Capture Local Search Traffic (Highest ROI)
+
+Your customers are in DDO, Quebec. When their fridge breaks, they search locally. You need to own those results.
+
+*   **Claim & Optimize Google Business Profile (GBP):** This is more important than your website for local discovery. Fill out every section: 
+categories, services (list specific repairs like "Refrigerator repair"), hours, and service areas . Upload photos of your showroom and 
+recent installs regularly. Google uses this data for AI summaries and maps .
+*   **Add LocalBusiness Schema Markup:** Add JSON-LD structured data to your site's `<head>`. This tells Google explicitly that you are an 
+    appliance store in DDO with specific hours and a phone number. It helps you appear in rich results .
+*   **Target Two Customer Types:** Your SEO content should address both **urgent replacements** (they care about "same-day delivery" and 
+"in-stock") and **planned remodels** (they care about "brand comparisons" and "package deals") . Your homepage currently leans toward 
+the bargain hunter; consider adding a line like "Fast Local Delivery & Installation Available" to capture the urgent crowd.
+
+### 🏪 Priority 2: Build Commercial Trust (Conversion)
+
+Visitors need reasons to choose you over a big-box store.
+
+*   **Leverage Your "Local" Advantage:** Big-box stores are transactional. You offer a relationship. Explicitly state your **delivery, 
+installation, and warranty support process** on the site . A line like "We deliver and install locally—call us if anything goes wrong" 
+is a powerful differentiator.
+*   **Showcase Reviews:** Add a simple testimonials section. Ask satisfied customers to mention **specifics** (e.g., "They delivered my 
+scratch-and-dent fridge the same day in DDO") . This builds trust for future buyers.
+*   **State Your Authorized Dealer Status:** If you are an authorized dealer for brands like Whirlpool or GE, say so clearly. It signals 
+authenticity and manufacturer-backed warranties, which matters for a major purchase .
+
+### 📄 Priority 3: Essential Pages You Are Missing
+
+Your current site is essentially a one-page landing page. For a commercial feel, you need a few dedicated pages:
+
+*   **Dedicated "About Us" Page:** Put a face to the business. Share your 5+ year story and photos of the team/store. People buy from 
+people, especially for local services .
+*   **"Delivery & Installation" Page:** This is a high-intent page. Explain your process, areas you serve, and whether it's free or 
+paid. This directly answers a top customer question .
+*   **Individual Product Pages (Optional but Powerful):** Instead of just a gallery, each appliance could have a page with specs, 
+price, and a "Reserve" button. This helps you rank for specific searches (e.g., "used Whirlpool washer DDO") .
+
+### 🛠️ Quick Implementation for Your Flask App
+
+You don't need a whole new system. Here are simple next steps:
+
+1.  **Add Schema Markup:** In `templates/index.html`, add a `<script type="application/ld+json">` block in the `<head>` with your 
+    store's name, address, phone, and hours .
+2.  **Create a "Services" Section:** Add a new `<section>` to your homepage or a separate page that explicitly lists "Local Delivery," 
+    "Installation," and "Warranty Support."
+3.  **Add a Testimonials Placeholder:** Add a section for 2-3 customer quotes (you can hardcode these for now; later you can pull them 
+from a database).
+
+**What would you like to tackle first?** I can help you write the JSON-LD schema for your specific store details, or we can build out 
+the "Services/Delivery" page in Flask.
+
+===============
+
+Priority 3 — Marketing/Commercial Polish
+
+From my earlier roadmap, these are worth adding once the core is stable:
+Item	Impact
+Google Business Profile	Free, and the single biggest driver of local discovery. Not code — but do it this week.
+Dedicated "Delivery & Installation" page	High-intent SEO. Answers "do they deliver to my area?" before customers call.
+Dedicated "About Us" page	Trust-building. Put a face to the business.
+Individual product pages (/appliance/<id>)	Rank for "used Whirlpool washer DDO" type searches. More than just a gallery.
+WhatsApp / click-to-call button	Mobile visitors convert 3x better when there's a one-tap contact.
+Reservation confirmation email	Once you have email sending set up (free via Gmail SMTP or Resend.com)
+
+==============
+
+https://search.google.com/test/rich-results
+
+https://search.google.com/search-console/welcome
+
+Verify domain ownership via DNS record
+royal-home.onrender.com
+1
+Select record type:
+Learn more
+2
+Sign in to your domain name provider (e.g. godaddy.com or namecheap.com)
+3
+Copy the TXT record below into the DNS configuration for royal-home.onrender.com
+google-site-verification=Wf253xh-GA3OX2j4cO1zusFI5m7ojKCzIKL_YZcFN4I
+4
+Press verify below
+Note: DNS changes may take some time to apply. If Search Console doesn’t find the record immediately, wait a day and then try to verify againLearn more
+
+Can’t verify via Domain name provider?
+For more verification methods, try a URL prefix property instead
+
+==============
+

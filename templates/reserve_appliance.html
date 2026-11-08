@@ -12,8 +12,18 @@
 
     <div class="card">
 
-        <h1>Reserve Appliance</h1>
+        <!-- Header row: title on the left, back button on the right -->
+        <div style="display: flex; justify-content: space-between;
+                    align-items: center; gap: 15px; flex-wrap: wrap;
+                    margin-bottom: 15px;">
 
+            <h1 style="margin: 0;">Reserve Appliance</h1>
+
+            <a href="/" class="inventory-btn" style="padding: 10px 18px;">
+                ← Back to Homepage
+            </a>
+
+        </div
         {% if item %}
 
             <h2>{{ item[1] }}</h2>
@@ -23,23 +33,49 @@
             <p><strong>Price:</strong> ${{ item[4] }}</p>
             <p><strong>Condition:</strong> {{ item[6] }}</p>
 
-            <form method="POST" action="/submit-reservation/{{ item[0] }}">
+                <form method="POST" action="/reserve_appliance/submit-reservation/{{ item[0] }}">
 
-                <label for="customer_name">Customer Name</label>
-                <input type="text" id="customer_name" name="customer_name" required>
+                    <label for="customer_name">Customer Name</label>
+                    <input type="text" id="customer_name" name="customer_name" required>
 
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" required>
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
 
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
 
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="4"></textarea>
+                    <fieldset style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
+                        <legend style="font-weight: bold; padding: 0 8px;">
+                            Additional Services (Optional)
+                        </legend>
 
-                <button class="upload-btn" type="submit">Submit Reservation</button>
+                        <label style="display: block; font-weight: normal; margin: 10px 0;">
+                            <input type="checkbox" name="delivery" style="width: auto; margin-right: 8px;">
+                            🚚 Local delivery to my address
+                        </label>
 
-            </form>
+                        <label style="display: block; font-weight: normal; margin: 10px 0;">
+                            <input type="checkbox" name="installation" style="width: auto; margin-right: 8px;">
+                            🔧 Professional installation
+                        </label>
+
+                        <label style="display: block; font-weight: normal; margin: 10px 0;">
+                            <input type="checkbox" name="haul_away" style="width: auto; margin-right: 8px;">
+                            🗑️ Haul away my old appliance
+                        </label>
+
+                        <p style="font-size: 0.9em; color: #666; margin-top: 12px;">
+                            Delivery and installation fees vary by appliance and distance.
+                            We'll confirm pricing when we call to finalize your reservation.
+                        </p>
+                    </fieldset>
+
+                    <label for="message">Message (optional)</label>
+                    <textarea id="message" name="message" rows="4"
+                            placeholder="Any questions? Preferred pickup/delivery time?"></textarea>
+
+                    <button class="upload-btn" type="submit">Submit Reservation</button>
+                </form>
 
         {% else %}
 

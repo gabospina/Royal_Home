@@ -157,7 +157,7 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/reserve/<int:item_id>")
+@app.route("/reserve_appliance/<int:item_id>")
 def reserve(item_id):
 
     conn = sqlite3.connect(DB_PATH)
@@ -170,8 +170,7 @@ def reserve(item_id):
 
     return render_template("reserve_appliance.html", item=item)
 
-
-@app.route("/submit-reservation/<int:item_id>", methods=["POST"])
+@app.route("/reserve_appliance/submit-reservation/<int:item_id>", methods=["POST"])
 def submit_reservation(item_id):
 
     customer_name = request.form["customer_name"]
@@ -179,9 +178,31 @@ def submit_reservation(item_id):
     email = request.form.get("email", "")
     message = request.form.get("message", "")
 
+    # Service options
+    wants_delivery = "delivery" in request.form
+    wants_installation = "installation" in request.form
+    wants_haul_away = "haul_away" in request.form
+
+    service_lines = []
+    if wants_delivery:
+        service_lines.append("Delivery")
+    if wants_installation:
+        service_lines.append("Installation")
+    if wants_haul_away:
+        service_lines.append("Haul away old appliance")
+
+    selected_services = ", ".join(service_lines) if service_lines else "Pickup only (no extra services)"
+
+    # Append services to the message so the manager sees it
+    full_message = (
+        f"SERVICES REQUESTED: {selected_services}\n\n"
+        f"CUSTOMER MESSAGE:\n{message or '(none)'}"
+    )
+
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # Look up item name for the success page
     cursor.execute(
         "SELECT product_name FROM inventory WHERE id = ?",
         (item_id,)
@@ -192,15 +213,23 @@ def submit_reservation(item_id):
     cursor.execute(
         """
         INSERT INTO reservations
-        (inventory_id, customer_name, phone, email, message, reservation_date)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (
+            inventory_id,
+            customer_name,
+            phone,
+            email,
+            message,
+            reservation_date
+        )
+        VALUES
+        (?, ?, ?, ?, ?, ?)
         """,
         (
             item_id,
             customer_name,
             phone,
             email,
-            message,
+            full_message,
             datetime.now().strftime("%Y-%m-%d %H:%M")
         )
     )
@@ -212,7 +241,8 @@ def submit_reservation(item_id):
         "reservation_success.html",
         customer_name=customer_name,
         phone=phone,
-        item_name=item_name
+        item_name=item_name,
+        services=selected_services
     )
 
 

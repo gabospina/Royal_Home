@@ -233,11 +233,9 @@
 
                 <form
                     method="POST"
-                    action="/delete/{{ item[7] }}"
+                    action="/delete/{{ item[0] }}"
                     onsubmit="return openDeleteModal(this)">
-                    <button
-                        class="delete-btn"
-                        type="submit">
+                    <button class="delete-btn" type="submit">
                         Delete
                     </button>
                 </form>

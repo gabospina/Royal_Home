@@ -9,27 +9,24 @@
 <body>
 
 <div class="container">
-
     <div class="card" style="text-align: center;">
-
-        <h1>✅ Reservation Submitted</h1>
-
+                <h1>✅ Reservation Submitted</h1>
         <p>
             Thank you, <strong>{{ customer_name }}</strong>.
             Your reservation for <strong>{{ item_name }}</strong> has been received.
         </p>
-
+        <p>
+            <strong>Services requested:</strong> {{ services }}
+        </p>
         <p>
             We will contact you at <strong>{{ phone }}</strong>
-            to confirm availability and pickup details.
+            to confirm availability, finalize pricing, and schedule
+            your service.
         </p>
-
         <br>
-
         <a href="/" class="upload-btn">Back to Homepage</a>
 
     </div>
-
 </div>
 
 </body>

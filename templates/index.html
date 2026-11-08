@@ -4,9 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discount Appliance Outlet</title>
-    <link
-rel="stylesheet"
-href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!-- Google LocalBusiness Schema — helps local search + AI summaries -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HomeGoodsStore",
+  "name": "Discount Appliance Outlet — The Royal Home",
+  "image": "{{ url_for('static', filename='images/store.jpg', _external=True) }}",
+  "logo": "{{ url_for('static', filename='images/rh_logo.png', _external=True) }}",
+  "url": "https://royal-home.onrender.com",
+  "telephone": "+1-877-775-6257",
+  "email": "info@theroyalhome.ca",
+  "priceRange": "$$",
+  "description": "Discount appliance outlet in Dollard-des-Ormeaux, Quebec. Quality refrigerators, washers, dryers, and ovens at reduced prices. Local delivery and installation available.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "3237 Sources Blvd",
+    "addressLocality": "Dollard-des-Ormeaux",
+    "addressRegion": "QC",
+    "postalCode": "H9B 1Z6",
+    "addressCountry": "CA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 45.4869,
+    "longitude": -73.7913
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    }
+  ],
+  "areaServed": [
+    {"@type": "City", "name": "Dollard-des-Ormeaux"},
+    {"@type": "City", "name": "Pointe-Claire"},
+    {"@type": "City", "name": "Pierrefonds"},
+    {"@type": "City", "name": "Kirkland"},
+    {"@type": "City", "name": "Beaconsfield"}
+  ],
+  "sameAs": []
+}
+</script>
+
 </head>
 
 <body>
@@ -119,7 +163,7 @@ Discount Appliance Outlet
             <h3>{{ item[1] }}</h3>
             <p>${{ item[4] }}</p>
             <a
-            href="/reserve/{{ item[0] }}"
+            href="/reserve_appliance/{{ item[0] }}"
             class="inventory-btn">
                 Reserve Appliance
             </a>
@@ -128,6 +172,89 @@ Discount Appliance Outlet
     </div>
 
 </section>
+
+<!-- SERVICES SECTION -->
+<section id="services" class="services">
+    <h2 class="section-title">What We Offer</h2>
+
+    <p style="text-align:center;max-width:900px;margin:0 auto 40px;">
+        Buying an appliance is more than a transaction. We make it easy from
+        showroom to your kitchen.
+    </p>
+
+    <div class="features">
+
+        <div class="feature-box">
+            <h3>🚚 Local Delivery</h3>
+            <p>
+                Fast delivery across the West Island — DDO, Pointe-Claire,
+                Pierrefonds, Kirkland, Beaconsfield, and surrounding areas.
+                Same-day options available on in-stock items.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <h3>🔧 Professional Installation</h3>
+            <p>
+                Our team connects water lines, vents, and power safely.
+                We haul away your old appliance at no extra charge.
+                Set up correctly the first time.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <h3>🛡️ Warranty Support</h3>
+            <p>
+                Every appliance comes with a manufacturer-backed warranty.
+                If something goes wrong, call us first — we'll help you
+                navigate the claim directly.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <h3>💬 Personal Service</h3>
+            <p>
+                Talk to a real person, not a call center. We answer questions
+                about sizing, brands, and setup before you buy — and after.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section id="testimonials" class="testimonials">
+    <h2 class="section-title">What Our Customers Say</h2>
+
+    <div class="features">
+
+        <div class="feature-box testimonial">
+            <p class="quote">
+                "Needed a fridge fast — they delivered the same day to DDO
+                and installed it perfectly. Saved over $400 vs. the big box stores."
+            </p>
+            <p class="author">— Marie L., Dollard-des-Ormeaux</p>
+        </div>
+
+        <div class="feature-box testimonial">
+            <p class="quote">
+                "The team helped me pick a washer that actually fit my tiny
+                laundry room. Real advice, not a sales pitch."
+            </p>
+            <p class="author">— Jean-Pierre R., Pierrefonds</p>
+        </div>
+
+        <div class="feature-box testimonial">
+            <p class="quote">
+                "Bought a scratch-and-dent oven — looks brand new and works
+                perfectly. They even took away my old one."
+            </p>
+            <p class="author">— Sophie M., Pointe-Claire</p>
+        </div>
+
+    </div>
+</section>
+
 
 <section class="contact" id="contact">
     <h2 class="section-title" style="color:white;">
