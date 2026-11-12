@@ -3,128 +3,358 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inventory List</title>
-<link
-    rel="stylesheet"
-    href="{{ url_for(
-        'static',
-        filename='css/style.css'
-    ) }}">
+<title>{{ tenant_name }} — Inventory List</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 <style>
-
-body{
-    font-family:Arial, sans-serif;
-    padding:20px;
+/* Page-local additions (kept here so they don't clutter style.css) */
+.print-btn {
+    background: #ff6600;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    font-family: inherit;
+    font-size: 14px;
 }
-
-h1{
-    color:#003366;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
-}
-
-th{
-    background:#003366;
-    color:white;
-}
-
-th,
-td{
-    border:1px solid #cccccc;
-    padding:10px;
-    text-align:left;
-}
-
-.print-btn{
-    background:#ff6600;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    cursor:pointer;
-    margin-bottom:20px;
-}
-
-@media print{
-
-    .print-btn{
-        display:none;
-    }
-
-}
-
+.print-btn:hover { background: #e65c00; }
+@media print { .print-btn, .toolbar, .filters-bar, .pagination, .bulk-bar { display: none !important; } }
 </style>
 
 </head>
 
 <body>
 
-<div class="dashboard-header">
-    <h1>Inventory List</h1>
-    <div>
-        <a href="/dashboard" class="inventory-btn">Return to Dashboard</a>
-        <a href="/logout" class="inventory-btn">Logout</a>
+<div class="container">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash-msg">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1>{{ tenant_name }} — Inventory List</h1>
+        <div>
+            <a href="/dashboard" class="inventory-btn">Dashboard</a>
+            <a href="/sold-inventory" class="inventory-btn">Sold Inventory</a>
+            <a href="/logout" class="inventory-btn">Logout</a>
+        </div>
     </div>
-</div>
 
-<div class="toolbar">
-    <a href="/export-excel" class="export-btn">Export Excel</a>
-    <button class="print-btn" onclick="window.open('/inventory-list-print', '_blank')">
-        Print Inventory
-    </button>
-    <form method="POST" action="/import-excel" enctype="multipart/form-data" class="import-form">
-        <input type="file" name="excel_file" accept=".xlsx,.xls" required>
-        <button class="upload-btn" type="submit">Import Excel</button>
+    <!-- ============================== -->
+    <!-- Toolbar (export / import / print) -->
+    <!-- ============================== -->
+    <div class="toolbar">
+
+        {% set print_qs = ('?' + request.query_string.decode()) if request.query_string else '' %}
+
+        <a href="/export-excel{{ print_qs }}" class="export-btn">
+            Export Excel{% if filters %} (filtered){% endif %}
+        </a>
+
+        <button type="button"
+                class="print-btn"
+                data-print-url="/inventory-list-print{{ print_qs }}">
+            Print Inventory{% if filters %} (filtered){% endif %}
+        </button>
+
+        <form method="POST"
+            action="/import-excel"
+            enctype="multipart/form-data"
+            class="import-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="file" name="excel_file" accept=".xlsx,.xls" required>
+            <button class="upload-btn" type="submit">Import Excel</button>
+        </form>
+
+    </div>
+
+    <!-- ============================== -->
+    <!-- Filters bar -->
+    <!-- ============================== -->
+    <form method="GET" action="/inventory-list" class="filters-bar" id="filtersForm">
+
+        <div class="filter-group filter-search">
+            <label for="q">Search</label>
+            <input
+                type="text"
+                id="q"
+                name="q"
+                placeholder="Product, brand or model…"
+                value="{{ filters.get('q', '') }}">
+        </div>
+
+        <div class="filter-group">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                <option value="">All</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if filters.get('category') == cat %}selected{% endif %}>
+                        {{ cat }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">All</option>
+                <option value="Available" {% if filters.get('status') == 'Available' %}selected{% endif %}>Available</option>
+                <option value="Sold"      {% if filters.get('status') == 'Sold' %}selected{% endif %}>Sold</option>
+            </select>
+        </div>
+
+        <div class="filter-group filter-price">
+            <label>Price</label>
+            <div class="price-range">
+                <input type="number" step="0.01" name="min_price" placeholder="Min"
+                       value="{{ filters.get('min_price', '') }}">
+                <span>–</span>
+                <input type="number" step="0.01" name="max_price" placeholder="Max"
+                       value="{{ filters.get('max_price', '') }}">
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label for="sort">Sort by</label>
+            <select id="sort" name="sort">
+                <option value="id"       {% if filters.get('sort', 'id') == 'id'       %}selected{% endif %}>Newest</option>
+                <option value="name"     {% if filters.get('sort') == 'name'     %}selected{% endif %}>Product name</option>
+                <option value="brand"    {% if filters.get('sort') == 'brand'    %}selected{% endif %}>Brand</option>
+                <option value="model"    {% if filters.get('sort') == 'model'    %}selected{% endif %}>Model</option>
+                <option value="price"    {% if filters.get('sort') == 'price'    %}selected{% endif %}>Price</option>
+                <option value="category" {% if filters.get('sort') == 'category' %}selected{% endif %}>Category</option>
+                <option value="status"   {% if filters.get('sort') == 'status'   %}selected{% endif %}>Status</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="dir">Order</label>
+            <select id="dir" name="dir">
+                <option value="desc" {% if filters.get('dir', 'desc') == 'desc' %}selected{% endif %}>Descending</option>
+                <option value="asc"  {% if filters.get('dir') == 'asc'  %}selected{% endif %}>Ascending</option>
+            </select>
+        </div>
+
+        <div class="filter-group filter-buttons">
+            <button type="submit" class="upload-btn">Apply</button>
+            {% if filters %}
+                <a href="/inventory-list" class="cancel-btn" style="text-decoration:none; display:inline-block; padding:10px 16px;">Clear</a>
+            {% endif %}
+        </div>
+
     </form>
-</div>
 
-<h1>Inventory List</h1>
+    <!-- ============================== -->
+    <!-- Results summary -->
+    <!-- ============================== -->
+    <p class="results-summary">
+        Showing <strong>{{ inventory|length }}</strong> of <strong>{{ total_items }}</strong> item{{ 's' if total_items != 1 else '' }}
+        {% if filters %} · <a href="/inventory-list">Clear all filters</a>{% endif %}
+    </p>
 
-<table>
-    <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in inventory %}
-        <tr>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td>{{ item[3] }}</td>
-            <td>${{ item[4] }}</td>
-            <td>{{ item[5] }}</td>
-            <td>{{ item[8] }}</td>
-        </tr>
+    <!-- ============================== -->
+    <!-- Inventory table -->
+    <!-- ============================== -->
+    {% if inventory %}
+
+    <form method="POST" id="bulkForm" action="/inventory-list/bulk">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="bulk_action" id="bulk_action_field" value="">
+    <input type="hidden" name="return_to" value="/inventory-list{{ ('?' + request.query_string.decode()) if request.query_string else '' }}">
+
+    <table class="inventory-table">
+        <thead>
+            <tr>
+                <th class="bulk-col">
+                    <input type="checkbox" id="selectAll" title="Select all">
+                </th>
+                <th>Product Name</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th class="price-col">Price</th>
+                <th>Category</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory %}
+            <tr>
+                <td class="bulk-col">
+                    <input type="checkbox" name="item_ids" value="{{ item[0] }}" class="row-checkbox">
+                </td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td class="price-col">${{ "%.2f"|format(item[4] or 0) }}</td>
+                <td>{{ item[5] }}</td>
+                <td>
+                    {% if item[8] == 'Sold' %}
+                        <span class="status-badge-sold">Sold</span>
+                    {% else %}
+                        <span class="status-badge-available">{{ item[8] or 'Available' }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="totals-row">
+                <td colspan="4">Total Items: {{ total_items }}</td>
+                <td class="price-col">${{ "%.2f"|format(total_price or 0) }}</td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Bulk action bar (hidden until selection) -->
+    <div class="bulk-bar" id="bulkBar" hidden>
+        <span><strong id="selectedCount">0</strong> selected</span>
+        <div class="bulk-actions">
+            <button type="button" class="bulk-btn bulk-sold"   onclick="submitBulk('mark-sold')">Mark as Sold</button>
+            <button type="button" class="bulk-btn bulk-delete" onclick="submitBulk('delete')">Delete</button>
+            <button type="button" class="bulk-btn bulk-cancel" onclick="clearSelection()">Cancel</button>
+        </div>
+    </div>
+    </form>
+
+    {% else %}
+
+    <div class="empty-state">
+        <p>
+            {% if filters %}
+                No products match your filters.
+                <a href="/inventory-list">Clear filters</a>
+            {% else %}
+                No inventory yet. <a href="/dashboard">Upload your first product</a>.
+            {% endif %}
+        </p>
+    </div>
+
+    {% endif %}
+
+    <!-- ============================== -->
+    <!-- Pagination -->
+    <!-- ============================== -->
+    {% if total_pages > 1 %}
+    <nav class="pagination" aria-label="Pagination">
+
+        {% set base_params = filters.copy() %}
+        {% set _ = base_params.pop('page', None) %}
+
+        {% if has_prev %}
+            <a class="page-btn"
+               href="/inventory-list?{{ base_params|urlencode }}&page={{ current_page - 1 }}">
+                ← Previous
+            </a>
+        {% else %}
+            <span class="page-btn disabled">← Previous</span>
+        {% endif %}
+
+        {% for p in page_numbers %}
+            {% if p == current_page %}
+                <span class="page-btn current">{{ p }}</span>
+            {% else %}
+                <a class="page-btn"
+                   href="/inventory-list?{{ base_params|urlencode }}&page={{ p }}">
+                    {{ p }}
+                </a>
+            {% endif %}
         {% endfor %}
 
-            <!-- Single combined totals row — spacer padding inside the row -->
-            <tr style="background: #f0f0f0; font-weight: bold; border-top: 4px solid #999;">
-                <td colspan="3" style="text-align: left; vertical-align: middle;
-                                    padding-top: 15px;">
-                    Total Items: {{ total_items }}
-                </td>
-                <td style="text-align: left; vertical-align: middle; border-left: 2px solid #999;
-                        padding-top: 15px;">
-                    ${{ "%.2f"|format(total_price) }}
-                </td>
-                <td colspan="2" style="border: none; padding-top: 10px;"></td>
-            </tr>
+        {% if has_next %}
+            <a class="page-btn"
+               href="/inventory-list?{{ base_params|urlencode }}&page={{ current_page + 1 }}">
+                Next →
+            </a>
+        {% else %}
+            <span class="page-btn disabled">Next →</span>
+        {% endif %}
 
-    </tbody>
+        <span class="page-info">
+            Page {{ current_page }} of {{ total_pages }}
+            · {{ per_page }} per page
+        </span>
 
-</table>
+    </nav>
+    {% endif %}
 
+</div>
+
+<script>
+(function () {
+
+    // ----------------------------------------------------
+    // Select all / individual checkboxes
+    // ----------------------------------------------------
+    var selectAll     = document.getElementById('selectAll');
+    var rowCheckboxes = Array.prototype.slice.call(document.querySelectorAll('.row-checkbox'));
+    var bulkBar       = document.getElementById('bulkBar');
+    var selectedCount = document.getElementById('selectedCount');
+
+    function updateBulkBar() {
+        if (!bulkBar) return;
+        var checked = rowCheckboxes.filter(function (c) { return c.checked; }).length;
+        if (checked > 0) {
+            bulkBar.hidden = false;
+            selectedCount.textContent = checked;
+        } else {
+            bulkBar.hidden = true;
+        }
+    }
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function () {
+            rowCheckboxes.forEach(function (c) { c.checked = selectAll.checked; });
+            updateBulkBar();
+        });
+    }
+
+    rowCheckboxes.forEach(function (c) {
+        c.addEventListener('change', updateBulkBar);
+    });
+
+    window.clearSelection = function () {
+        rowCheckboxes.forEach(function (c) { c.checked = false; });
+        if (selectAll) selectAll.checked = false;
+        updateBulkBar();
+    };
+
+    window.submitBulk = function (action) {
+        var checked = rowCheckboxes.filter(function (c) { return c.checked; });
+        if (checked.length === 0) return;
+
+        var msg = action === 'delete'
+            ? 'Delete ' + checked.length + ' selected item(s)? This cannot be undone.'
+            : 'Mark ' + checked.length + ' selected item(s) as Sold?';
+
+        if (!confirm(msg)) return;
+
+        document.getElementById('bulk_action_field').value = action;
+        document.getElementById('bulkForm').submit();
+    };
+
+})();
+</script>
+<script>
+document.querySelectorAll('.print-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        if (btn.dataset.printUrl) {
+            window.open(btn.dataset.printUrl, '_blank');
+        }
+    });
+});
+</script>
 </body>
 </html>

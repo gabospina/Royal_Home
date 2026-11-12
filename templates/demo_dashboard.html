@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Live demonstration of the Retail Inventory Management Platform — dashboard, sales analytics, and customer reservations.">
+
+    <meta name="robots"
+          content="noindex, nofollow">
+
+    <title>Demo Dashboard — Inventory Management Platform</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="demo-banner" role="status">
+
+    <span class="demo-banner-dot" aria-hidden="true"></span>
+
+    You are viewing a <strong>live demonstration</strong>.
+    All data shown is sample data.
+
+</div>
+
+<div class="container">
+
+    <div class="dashboard-header">
+
+        <h1>
+
+            Inventory Management Platform
+
+        </h1>
+
+        <div class="dashboard-actions">
+
+            <a
+                href="/business-demo"
+                class="inventory-btn">
+
+                Public Demo
+
+            </a>
+
+            <a
+                href="/demo-logout"
+                class="inventory-btn">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <p class="demo-intro">
+
+        A complete inventory, sales, and customer management
+        platform designed for modern retailers.
+
+    </p>
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+
+            <h2>500+</h2>
+
+            <p>Products Managed</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>120</h2>
+
+            <p>Sales Recorded</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>45</h2>
+
+            <p>Reservations</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>$85,000</h2>
+
+            <p>Inventory Value</p>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Business Benefits
+
+        </h2>
+
+        <p>
+
+            Store owners spend less time managing inventory
+            and more time serving customers.
+
+        </p>
+
+        <p>
+
+            Capture online reservations, organize inventory,
+            track sales history, and improve customer experience.
+
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Why Store Owners Choose This Platform
+
+        </h2>
+
+        <ul>
+
+            <li>
+                Reduce inventory administration time.
+            </li>
+
+            <li>
+                Track available and sold products.
+            </li>
+
+            <li>
+                Import and export Excel inventory files.
+            </li>
+
+            <li>
+                Allow customers to reserve products online.
+            </li>
+
+            <li>
+                Access the business from any device.
+            </li>
+
+            <li>
+                Eliminate spreadsheets and paperwork.
+            </li>
+
+        </ul>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Customer Reservations &amp; Leads
+
+        </h2>
+
+        <p>
+
+            Reservation requests generated through the website
+            are displayed here, allowing store owners to
+            quickly follow up with interested customers.
+
+        </p>
+
+        <div class="reservation-demo">
+
+            <div class="reservation-card">
+
+                <h3>
+
+                    John Smith
+
+                </h3>
+
+                <p>
+
+                    <strong>Interested In:</strong>
+                    Samsung Refrigerator
+
+                </p>
+
+                <p>
+
+                    <strong>Phone:</strong>
+                    514-555-1234
+
+                </p>
+
+                <p>
+
+                    <strong>Email:</strong>
+                    john.smith@email.com
+
+                </p>
+
+                <p>
+
+                    <strong>Status:</strong>
+                    <span class="status-badge status-new">New Lead</span>
+
+                </p>
+
+            </div>
+
+            <div class="reservation-card">
+
+                <h3>
+
+                    Marie Tremblay
+
+                </h3>
+
+                <p>
+
+                    <strong>Interested In:</strong>
+                    Living Room Furniture Set
+
+                </p>
+
+                <p>
+
+                    <strong>Phone:</strong>
+                    514-555-6789
+
+                </p>
+
+                <p>
+
+                    <strong>Email:</strong>
+                    marie@email.com
+
+                </p>
+
+                <p>
+
+                    <strong>Status:</strong>
+                    <span class="status-badge status-contacted">Contacted</span>
+
+                </p>
+
+            </div>
+
+            <div class="reservation-card">
+
+                <h3>
+
+                    Robert Wilson
+
+                </h3>
+
+                <p>
+
+                    <strong>Interested In:</strong>
+                    Mountain Bike
+
+                </p>
+
+                <p>
+
+                    <strong>Phone:</strong>
+                    514-555-8888
+
+                </p>
+
+                <p>
+
+                    <strong>Email:</strong>
+                    robert@email.com
+
+                </p>
+
+                <p>
+
+                    <strong>Status:</strong>
+                    <span class="status-badge status-awaiting">Awaiting Response</span>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Sales Analytics &amp; Inventory Value
+
+        </h2>
+
+        <p>
+
+            Business owners can instantly monitor inventory performance,
+            identify top-selling categories, and understand how much stock
+            is currently available for sale.
+
+        </p>
+
+        <div class="stats-container">
+
+            <div class="stat-card">
+
+                <h2>
+
+                    $85,000
+
+                </h2>
+
+                <p>
+
+                    Inventory Value
+
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h2>
+
+                    $12,500
+
+                </h2>
+
+                <p>
+
+                    Monthly Sales
+
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h2>
+
+                    72%
+
+                </h2>
+
+                <p>
+
+                    Inventory Turnover
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <h3>
+
+            Top Performing Categories
+
+        </h3>
+
+        <div class="bar-chart" role="img" aria-label="Top performing categories: Furniture 45 products sold, Electronics 37 products sold, Appliances 29 products sold">
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+
+                    <span>Furniture</span>
+                    <span>45 sold</span>
+
+                </div>
+
+                <div class="bar-track">
+
+                    <div class="bar-fill" style="--pct: 100%"></div>
+
+                </div>
+
+            </div>
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+
+                    <span>Electronics</span>
+                    <span>37 sold</span>
+
+                </div>
+
+                <div class="bar-track">
+
+                    <div class="bar-fill" style="--pct: 82%"></div>
+
+                </div>
+
+            </div>
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+
+                    <span>Appliances</span>
+                    <span>29 sold</span>
+
+                </div>
+
+                <div class="bar-track">
+
+                    <div class="bar-fill" style="--pct: 64%"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Manager Time Savings
+
+        </h2>
+
+        <p>
+
+            The platform reduces administrative work and allows owners
+            to focus on customers, sales, and growing the business.
+
+        </p>
+
+        <div class="features">
+
+            <div class="feature-box">
+
+                <h3>
+
+                    Before
+
+                </h3>
+
+                <ul>
+
+                    <li>Paper inventory lists</li>
+
+                    <li>Manual sales tracking</li>
+
+                    <li>Excel files scattered everywhere</li>
+
+                    <li>Phone calls for product availability</li>
+
+                    <li>Missing customer information</li>
+
+                </ul>
+
+            </div>
+
+            <div class="feature-box">
+
+                <h3>
+
+                    After
+
+                </h3>
+
+                <ul>
+
+                    <li>Centralized inventory management</li>
+
+                    <li>Automatic sold inventory tracking</li>
+
+                    <li>Import and export inventory in seconds</li>
+
+                    <li>Online product reservations</li>
+
+                    <li>Customer lead management</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="stats-container">
+
+            <div class="stat-card">
+
+                <h2>
+
+                    5+
+
+                </h2>
+
+                <p>
+
+                    Hours Saved Weekly
+
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h2>
+
+                    100%
+
+                </h2>
+
+                <p>
+
+                    Inventory Visibility
+
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h2>
+
+                    24/7
+
+                </h2>
+
+                <p>
+
+                    Online Product Access
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Industries Supported
+
+        </h2>
+
+        <div class="features">
+
+            <div class="feature-box">
+
+                Appliances
+
+            </div>
+
+            <div class="feature-box">
+
+                Clothing
+
+            </div>
+
+            <div class="feature-box">
+
+                Electronics
+
+            </div>
+
+            <div class="feature-box">
+
+                Furniture
+
+            </div>
+
+            <div class="feature-box">
+
+                Hobby Shops
+
+            </div>
+
+            <div class="feature-box">
+
+                Sporting Goods
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+
+            Included Features
+
+        </h2>
+
+        <div class="features">
+
+            <div class="feature-box">
+
+                <h3>Inventory Dashboard</h3>
+
+                <p>
+                    Manage products and photos.
+                </p>
+
+            </div>
+
+            <div class="feature-box">
+
+                <h3>Sold Inventory</h3>
+
+                <p>
+                    Never lose sales history.
+                </p>
+
+            </div>
+
+            <div class="feature-box">
+
+                <h3>Reservations</h3>
+
+                <p>
+                    Capture customer interest.
+                </p>
+
+            </div>
+
+            <div class="feature-box">
+
+                <h3>Excel Import</h3>
+
+                <p>
+                    Upload inventory in seconds.
+                </p>
+
+            </div>
+
+            <div class="feature-box">
+
+                <h3>Excel Export</h3>
+
+                <p>
+                    Share inventory with suppliers and staff.
+                </p>
+
+            </div>
+
+            <div class="feature-box">
+
+                <h3>Business Analytics</h3>
+
+                <p>
+                    Understand inventory performance.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

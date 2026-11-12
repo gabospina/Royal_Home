@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Demo Manager Login</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for(
+            'static',
+            filename='css/style.css'
+        ) }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>
+
+            Demo Platform Login
+
+        </h1>
+
+        <p>
+
+            Demonstration access for prospective business owners.
+
+        </p>
+
+        {% if demo_user and demo_pass %}
+
+        <div class="demo-credentials">
+
+            <h3>🎬 Public Demo Access</h3>
+
+            <p>Use these credentials to explore the platform:</p>
+
+            <p>
+                <strong>Username:</strong>
+                <code>{{ demo_user }}</code>
+            </p>
+
+            <p>
+                <strong>Password:</strong>
+                <code>{{ demo_pass }}</code>
+            </p>
+
+            <p class="small">
+                This is a read-only demo with sample data.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        {% if error %}
+
+        <div class="missing-photo">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+        <form
+            method="POST" action="/demo-login">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label>
+
+                Username
+
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                required>
+
+            <label>
+
+                Password
+
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                required>
+
+            <br><br>
+
+            <button
+                type="submit"
+                class="upload-btn">
+
+                Login
+
+            </button>
+
+        </form>
+
+        <br>
+
+        <a
+            href="/business-demo"
+            class="inventory-btn">
+
+            Return to Demo Website
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

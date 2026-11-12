@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ tenant_name }} — {{ bt.name }} Inventory</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -13,146 +16,157 @@
 
 <div class="container">
 
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash-msg">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- ========================================================= -->
+    <!-- Header                                                    -->
+    <!-- ========================================================= -->
     <div class="dashboard-header">
-        <h1>Inventory Dashboard</h1>
+        <h1>{{ tenant_name }} — Inventory Dashboard</h1>
         <div>
-            <a
-                href="/inventory-list"
-                class="inventory-btn">
-                Inventory List
-            </a>
-            <a
-                href="/sold-inventory"
-                class="inventory-btn">
-                Sold Inventory
-            </a>
-            <a
-                href="/logout"
-                class="inventory-btn">
-                Logout
-            </a>
+            <a href="/inventory-list" class="inventory-btn">Inventory List</a>
+            <a href="/sold-inventory" class="inventory-btn">Sold Inventory</a>
+            <a href="/logout" class="inventory-btn">Logout</a>
         </div>
     </div>
 
+    <!-- ========================================================= -->
+    <!-- Tenant switcher (dev only — hidden when flag is off)      -->
+    <!-- ========================================================= -->
+    {% if allow_tenant_switching %}
+    <div class="tenant-switcher">
+        <form method="POST" action="" id="tenantSwitchForm">
+            <label for="tenantSelect">Viewing as:</label>
+            <select id="tenantSelect" onchange="switchTenant(this.value)">
+                {% for t in tenants %}
+                <option value="{{ t[0] }}" {% if t[0] == current_tid %}selected{% endif %}>
+                    {{ t[2] }}{% if t[3] %} (demo){% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- ========================================================= -->
+    <!-- Stats                                                     -->
+    <!-- ========================================================= -->
     <div class="stats-container">
 
         <div class="stat-card">
-
             <h2>{{ available_count }}</h2>
-
             <p>Available</p>
-
         </div>
 
         <div class="stat-card">
-
             <h2>{{ sold_count }}</h2>
-
             <p>Sold</p>
-
         </div>
 
         <div class="stat-card">
-
             <h2>{{ total_count }}</h2>
-
             <p>Total</p>
-
         </div>
 
     </div>
 
-
+    <!-- ========================================================= -->
+    <!-- Upload form — labels driven by business type config       -->
+    <!-- ========================================================= -->
     <div class="card">
 
-        <h2>Upload New Appliance Photo</h2>
-        
+        <h2>{{ bt.upload_title }}</h2>
+
         <form
-            method="POST"
-            action="/upload"
-            enctype="multipart/form-data">
+            method="POST" action="/upload" enctype="multipart/form-data" id="uploadForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product_name">Product Name</label>
+                    <input type="text" id="product_name" name="product_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <input type="text" id="brand" name="brand">
+                </div>
+            </div>
 
             <div class="form-row">
+                <div class="form-group">
+                    <label for="model">{{ bt.model_label }}</label>
 
-            <div class="form-group">
-                <label for="product_name">Product Name</label>
-                <input
-                    type="text"
-                    id="product_name"
-                    name="product_name">
+                    {% if bt.model_type == 'select' %}
+                        <select id="model" name="model" required>
+                            <option value="">-- Select {{ bt.model_label }} --</option>
+                            {% for opt in bt.model_options %}
+                                <option value="{{ opt }}">{{ opt }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="text" id="model" name="model">
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" step="0.01" id="price" name="price">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="brand">Brand</label>
-                <input
-                    type="text"
-                    id="brand"
-                    name="brand">
-            </div>
-        </div>
-
-        <div class="form-row">
-
-            <div class="form-group">
-                <label for="model">Model</label>
-                <input
-                    type="text"
-                    id="model"
-                    name="model">
-            </div>
-
-            <div class="form-group">
-                <label for="price">Price</label>
-                <input
-                    type="number"
-                    step="0.01"
-                    id="price"
-                    name="price">
-            </div>
-
-        </div>
-
-            <label for="category">Category</label>
-            <select
-                id="category"
-                name="category">
-
-                <option value="">-- Select Category --</option>
-                <option>Refrigerator</option>
-                <option>Washer</option>
-                <option>Dryer</option>
-                <option>Oven</option>
-
+            <label for="category">{{ bt.category_label }}</label>
+            <select id="category" name="category" required>
+                <option value="">-- Select {{ bt.category_label }} --</option>
+                {% for cat in bt.categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                {% endfor %}
             </select>
 
-            <label for="condition">Condition</label>
+            <label for="condition">{{ bt.condition_label }}</label>
             <textarea
                 id="condition"
                 name="condition"
-                rows="4"></textarea>
+                rows="4"
+                placeholder="{{ bt.condition_placeholder }}"></textarea>
 
-            <label for="photo">Photo</label>
+            <label for="photos">Photos (up to 8 — first photo becomes the primary)</label>
 
-            <input
-                type="file"
-                id="photo"
-                name="photo"
-                accept="image/*"
-                required>
+            <div id="dropzone" class="photo-dropzone">
+                <input
+                    type="file"
+                    id="photos"
+                    name="photos"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    required
+                    style="display:none">
+                <p class="dropzone-hint">
+                    <strong>Drag photos here</strong><br>
+                    or <button type="button" class="dropzone-browse" onclick="document.getElementById('photos').click()">Browse files</button>
+                </p>
+                <p class="dropzone-note">JPG, PNG, or WEBP · max 8 MB each</p>
+            </div>
 
-            <button
-                class="upload-btn"
-                type="submit">
-                Upload Appliance
-            </button>
+            <div id="preview" class="photo-preview-grid"></div>
+
+            <button class="upload-btn" type="submit">{{ bt.upload_title }}</button>
 
         </form>
 
     </div>
 
+    <!-- ========================================================= -->
+    <!-- Current inventory grid                                    -->
+    <!-- ========================================================= -->
     <div class="card">
 
-    <h2>Current Inventory</h2>
+        <h2>Current {{ bt.name }} Inventory</h2>
 
         {% if inventory %}
 
@@ -162,24 +176,15 @@
 
                 <div class="inventory-item">
 
-                {% if item[7] == 'no-image.png' %}
-                    <img
-                    src="{{ url_for(
-                        'static',
-                        filename='images/no-image.png'
-                    ) }}"
-                    alt="No Image">
-
-                {% else %}
-
-                    <img
-                    src="{{ url_for(
-                        'static',
-                        filename='images/uploads/' + item[7]
-                    ) }}"
-                    alt="{{ item[1] }}">
-
-                {% endif %}
+                    {% if item[7] == 'no-image.png' %}
+                        <img
+                            src="{{ url_for('static', filename='images/no-image.png') }}"
+                            alt="No Image">
+                    {% else %}
+                        <img
+                            src="{{ url_for('static', filename='images/uploads/' + item[7]) }}"
+                            alt="{{ item[1] }}">
+                    {% endif %}
 
                     <div class="inventory-content">
 
@@ -190,12 +195,9 @@
                         <h3>{{ item[1] }}</h3>
 
                         <p><strong>Brand:</strong> {{ item[2] }}</p>
-
-                        <p><strong>Model:</strong> {{ item[3] }}</p>
-
+                        <p><strong>{{ bt.model_label }}:</strong> {{ item[3] }}</p>
                         <p><strong>Price:</strong> ${{ item[4] }}</p>
-
-                        <p><strong>Condition:</strong> {{ item[6] }}</p>
+                        <p><strong>{{ bt.condition_label }}:</strong> {{ item[6] }}</p>
                         <p><strong>Status:</strong> {{ item[8] }}</p>
 
                         {% if item[7] == 'no-image.png' %}
@@ -203,191 +205,172 @@
                                 ⚠ Photo Needed
                             </div>
 
-                            <a
-                                href="/upload-photo/{{ item[0] }}"
-                                class="upload-photo-btn">
-
+                            <a href="/upload-photo/{{ item[0] }}" class="upload-photo-btn">
                                 Upload Photo
-
                             </a>
                         {% endif %}
                     </div>
 
-                <a
-                    href="/edit_inventory/{{ item[0] }}"
-                    class="edit-btn">
-                    Edit
-                </a>
+                    <a href="/edit_inventory/{{ item[0] }}" class="edit-btn">
+                        Edit
+                    </a>
 
-                <form
-                    method="POST"
-                    action="/mark-sold/{{ item[0] }}"
-                    onsubmit="return openSoldModal(this)">
-                    <button
-                        class="sold-btn"
-                        type="submit">
-                        Sold
-                    </button>
+                    <form method="POST" action="/mark-sold/{{ item[0] }}" onsubmit="return openSoldModal(this)">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="sold-btn" type="submit">Sold</button>
+                    </form>
 
-                </form>
+                    <form method="POST"
+                          action="/delete/{{ item[0] }}" onsubmit="return openDeleteModal(this)">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="delete-btn" type="submit">Delete</button>
+                    </form>
 
-                <form
-                    method="POST"
-                    action="/delete/{{ item[0] }}"
-                    onsubmit="return openDeleteModal(this)">
-                    <button class="delete-btn" type="submit">
-                        Delete
-                    </button>
-                </form>
-
-            </div>
+                </div>
 
                 {% endfor %}
 
             </div>
 
-    {% else %}
+        {% else %}
 
-        <p>No inventory photos uploaded yet.</p>
+            <p>No {{ bt.name.lower() }} inventory yet. Upload your first item above.</p>
 
-    {% endif %}
+        {% endif %}
+
+    </div>
+
 </div>
 
-<!-- SOLD MODAL -->
-
+<!-- ============================================================ -->
+<!-- SOLD MODAL                                                    -->
+<!-- ============================================================ -->
 <div id="soldModal" class="custom-modal">
-
     <div class="modal-content">
-
-        <h2>Mark Product as Sold</h2>
-
+        <h2>Mark {{ bt.name }} as Sold</h2>
         <p>
-            This product will be removed from Current Inventory
+            This {{ bt.name.lower() }} will be removed from Current Inventory
             and stored in Sold Inventory for future reference.
         </p>
-
         <div class="modal-buttons">
-
-            <button
-                class="cancel-btn"
-                onclick="closeSoldModal()">
-
-                Cancel
-
-            </button>
-
-            <button
-                class="confirm-btn"
-                id="confirmSoldBtn">
-
-                Confirm
-
-            </button>
-
+            <button class="cancel-btn" onclick="closeSoldModal()">Cancel</button>
+            <button class="confirm-btn" id="confirmSoldBtn">Confirm</button>
         </div>
-
     </div>
-
 </div>
 
-<!-- DELETE MODAL -->
-
+<!-- ============================================================ -->
+<!-- DELETE MODAL                                                  -->
+<!-- ============================================================ -->
 <div id="deleteModal" class="custom-modal">
-
     <div class="modal-content">
-
-        <h2>Delete Product</h2>
-
+        <h2>Delete {{ bt.name }}</h2>
         <p>
             This action will permanently remove
-            the product from the inventory.
-
+            the {{ bt.name.lower() }} from the inventory.
         </p>
-
         <div class="modal-buttons">
-
-            <button
-                class="cancel-btn"
-                onclick="closeDeleteModal()">
-
-                Cancel
-
-            </button>
-
-            <button
-                class="delete-confirm-btn"
-                id="confirmDeleteBtn">
-
-                Delete
-
-            </button>
-
+            <button class="cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+            <button class="delete-confirm-btn" id="confirmDeleteBtn">Delete</button>
         </div>
-
     </div>
-
 </div>
+
+<!-- ============================================================ -->
+<!-- Scripts                                                       -->
+<!-- ============================================================ -->
 <script>
 
-let soldForm = null;
-let deleteForm = null;
+// ---------- Sold / Delete modals ----------
+var soldForm = null;
+var deleteForm = null;
 
-function openSoldModal(form){
-
+function openSoldModal(form) {
     soldForm = form;
-
-    document
-        .getElementById("soldModal")
-        .style.display = "flex";
-
+    document.getElementById("soldModal").style.display = "flex";
     return false;
 }
 
-function closeSoldModal(){
-
-    document
-        .getElementById("soldModal")
-        .style.display = "none";
+function closeSoldModal() {
+    document.getElementById("soldModal").style.display = "none";
 }
 
-document
-.getElementById("confirmSoldBtn")
-.addEventListener(
-    "click",
-    function(){
+document.getElementById("confirmSoldBtn").addEventListener("click", function () {
+    if (soldForm) soldForm.submit();
+});
 
-        soldForm.submit();
-    }
-);
-
-function openDeleteModal(form){
-
+function openDeleteModal(form) {
     deleteForm = form;
-
-    document
-        .getElementById("deleteModal")
-        .style.display = "flex";
-
+    document.getElementById("deleteModal").style.display = "flex";
     return false;
 }
 
-function closeDeleteModal(){
-
-    document
-        .getElementById("deleteModal")
-        .style.display = "none";
+function closeDeleteModal() {
+    document.getElementById("deleteModal").style.display = "none";
 }
 
-document
-.getElementById("confirmDeleteBtn")
-.addEventListener(
-    "click",
-    function(){
+document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+    if (deleteForm) deleteForm.submit();
+});
 
-        deleteForm.submit();
+// ---------- Tenant switcher (dev only) ----------
+function switchTenant(tid) {
+    var form = document.getElementById('tenantSwitchForm');
+    form.action = '/admin/switch-tenant/' + tid;
+    form.submit();
+}
+
+// ---------- Drag-and-drop photo upload ----------
+(function () {
+    var input    = document.getElementById('photos');
+    var dropzone = document.getElementById('dropzone');
+    var preview  = document.getElementById('preview');
+
+    if (!input || !dropzone || !preview) return;
+
+    function renderPreview(files) {
+        preview.innerHTML = '';
+        Array.prototype.forEach.call(files, function (file) {
+            if (!file.type.startsWith('image/')) return;
+            var wrap = document.createElement('div');
+            wrap.className = 'preview-item';
+            var img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.onload = function () { URL.revokeObjectURL(img.src); };
+            wrap.appendChild(img);
+            preview.appendChild(wrap);
+        });
     }
-);
+
+    input.addEventListener('change', function () {
+        renderPreview(input.files);
+    });
+
+    ['dragenter', 'dragover'].forEach(function (evt) {
+        dropzone.addEventListener(evt, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('drag-active');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(function (evt) {
+        dropzone.addEventListener(evt, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('drag-active');
+        });
+    });
+
+    dropzone.addEventListener('drop', function (e) {
+        var dt = e.dataTransfer;
+        if (!dt || !dt.files) return;
+        input.files = dt.files;
+        renderPreview(dt.files);
+    });
+})();
 
 </script>
+
 </body>
 </html>

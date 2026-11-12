@@ -1,16 +1,79 @@
+# =============================================================
+# Environment — NEVER commit secrets
+# =============================================================
 .env
+.env.local
+.env.production
+.env.backup-*
+.env.*.backup-*
+!.env.example
+
+# =============================================================
+# Python
+# =============================================================
 __pycache__/
 *.pyc
-database/inventory.db
-static/images/uploads/*
-!static/images/uploads/.gitkeep
-inventory_export.xlsx
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+ENV/
 
-inventory.db
+# =============================================================
+# Databases (customer data — never in git)
+# =============================================================
+database/*.db
 *.db
 *.sqlite
 *.sqlite3
+
+# =============================================================
+# User uploads (photos go to persistent disk, not git)
+# =============================================================
+static/images/uploads/*
+!static/images/uploads/.gitkeep
+!static/images/uploads/no-image.png
+
+# =============================================================
+# Excel exports
+# =============================================================
+*.xlsx
+*.xls
+
+# =============================================================
+# Development backups — never commit
+# =============================================================
+*.backup-*
+*.backup-pre-*
+*backup-*
+backup-pre-*
+templates.backup-*/
+static.backup-*/
 * copy.py
 * copy.html
 *.bak
 *.old
+
+# =============================================================
+# Local test files
+# =============================================================
+check_*.py
+test_*.py
+test_import.xlsx
+structure_site.py
+
+# =============================================================
+# Personal notes — NEVER commit
+# =============================================================
+comments.txt
+comments-achived.txt
+comments*.txt
+
+# =============================================================
+# OS files
+# =============================================================
+.DS_Store
+Thumbs.db
+desktop.ini

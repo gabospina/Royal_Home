@@ -433,16 +433,74 @@ input[type="file"]{
     text-align:center;
 }
 
-/* Inventory List button */
-.dashboard-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
+/* =============================================================
+   Dashboard header — flexible, responsive, less crowded
+   ============================================================= */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;              /* wrap gracefully when tight */
 }
 
-.dashboard-header h1{
-    margin:0;
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 1.6rem;            /* slightly smaller — less crowding */
+    line-height: 1.25;
+    flex: 1 1 auto;               /* h1 takes available space */
+    min-width: 240px;             /* but not below this */
+    color: #003366;
+}
+
+.dashboard-header > div {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Smaller, more compact inventory-btn inside the header */
+.dashboard-header .inventory-btn {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    margin-left: 0;               /* override the global margin-left:10px */
+    margin-right: 0;
+}
+
+/* Mobile — stack the header */
+@media (max-width: 640px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .dashboard-header h1 {
+        min-width: 0;
+        font-size: 1.35rem;
+    }
+    .dashboard-header > div {
+        justify-content: stretch;
+    }
+    .dashboard-header .inventory-btn {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+    .dashboard-actions {
+        width: 100%;
+    }
+
+    .dashboard-actions .inventory-btn {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    .demo-banner {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
 }
 
 .inventory-btn:hover{
@@ -771,4 +829,1793 @@ input[type="file"]{
     color: #003366;
     text-align: right;
     font-size: 0.95em;
+}
+
+/* BUSINESS-DEMO */
+
+.demo-intro{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    font-size:18px;
+
+    color:#555;
+}
+
+/* Customer Reservations & Leads */
+.reservation-demo{
+
+    display:flex;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin-top:20px;
+}
+
+.reservation-card{
+
+    flex:1;
+
+    min-width:250px;
+
+    background:#f8f8f8;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    padding:15px;
+
+    box-shadow:0 2px 4px rgba(0,0,0,.08);
+}
+
+.reservation-card h3{
+
+    color:#003366;
+
+    margin-bottom:10px;
+}
+
+.reservation-card p{
+
+    margin:6px 0;
+}
+
+/* Sales Analytics & Inventory Value */
+.card h3{
+
+    color:#003366;
+
+    margin-bottom:10px;
+}
+
+/* Manager Time Savings */
+
+.feature-box ul{
+
+    margin-top:10px;
+
+    padding-left:20px;
+
+    text-align:left;
+}
+
+.feature-box li{
+
+    margin-bottom:8px;
+}
+
+.feature-box ul{
+
+    margin-top:10px;
+
+    padding-left:20px;
+
+    text-align:left;
+}
+
+.feature-box li{
+
+    margin-bottom:8px;
+}
+
+/* Public demo credentials box on /demo-login */
+.demo-credentials {
+    background: #f0f7ff;
+    border: 1px solid #cfe3ff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+.demo-credentials h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+.demo-credentials p {
+    margin: 6px 0;
+}
+.demo-credentials code {
+    background: #e3eeff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 1.05em;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+.demo-credentials .small {
+    font-size: .85em;
+    color: #555;
+    margin-top: 12px;
+}
+
+/* =============================================================
+   Demo Dashboard — additive styles (used only on demo pages)
+   ============================================================= */
+
+/* --- "You are viewing a live demonstration" banner --- */
+.demo-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #fff8e6;
+    color: #6b4b00;
+    border-bottom: 1px solid #f0d98c;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.demo-banner strong {
+    font-weight: 700;
+}
+
+.demo-banner-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f0a500;
+    box-shadow: 0 0 0 0 rgba(240, 165, 0, 0.6);
+    animation: demo-pulse 2s infinite;
+    flex: 0 0 auto;
+}
+
+@keyframes demo-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(240, 165, 0, 0.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(240, 165, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(240, 165, 0, 0); }
+}
+
+/* --- Header action group (Public Demo / Logout) --- */
+.dashboard-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* --- Status badges on reservation cards --- */
+.status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.status-new {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+
+.status-contacted {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.status-awaiting {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+/* --- Top Performing Categories bar chart --- */
+.bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.bar-track {
+    background: #e9eef5;
+    border-radius: 999px;
+    height: 14px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    background: linear-gradient(90deg, #2563eb, #4f8ef7);
+    height: 100%;
+    width: var(--pct, 0%);
+    border-radius: 999px;
+    transition: width 0.8s ease-out;
+}
+
+/* =============================================================
+   Landing Page — additive styles (business_demo.html only)
+   ============================================================= */
+
+/* --- Sticky header --- */
+header#siteHeader {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    transition: box-shadow 0.2s ease;
+}
+
+header#siteHeader.scrolled {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Nav demo link (accent) --- */
+.nav-demo-link {
+    font-weight: 600;
+    color: #2563eb;
+}
+
+/* --- Hamburger toggle --- */
+.nav-toggle {
+    display: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 8px;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #333;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.nav-toggle.is-open span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+.nav-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+}
+.nav-toggle.is-open span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (max-width: 820px) {
+
+    .nav-toggle { display: flex; }
+
+    #primaryNav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        flex-direction: column;
+        padding: 12px 20px 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    #primaryNav.nav-open { display: flex; }
+
+    #primaryNav li { padding: 8px 0; }
+
+}
+
+/* --- Hero CTA group --- */
+.hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.btn-secondary {
+    background: transparent !important;
+    color: #2563eb !important;
+    border: 2px solid #2563eb !important;
+}
+
+.btn-secondary:hover {
+    background: #2563eb !important;
+    color: #fff !important;
+}
+
+.hero-trust {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 12px;
+}
+
+/* --- How it works --- */
+.how-it-works {
+    padding: 40px 20px;
+    background: #f8fafc;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 24px auto 0;
+}
+
+.step {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+}
+
+.step-number {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    margin: 0 auto 12px;
+    font-size: 1.1rem;
+}
+
+.step h3 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+}
+
+.step p {
+    margin: 0;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/* --- About text (replaces inline style) --- */
+.about-text {
+    text-align: center;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* --- Stock badges --- */
+.inventory-card {
+    position: relative;
+}
+
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.stock-in {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.stock-low {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.stock-reserved {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.price {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #111;
+}
+
+/* --- Testimonials --- */
+.testimonials {
+    padding: 40px 20px;
+    background: #f8fafc;
+}
+
+.sample-note {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin: -8px 0 24px;
+}
+
+.testimonial {
+    text-align: left;
+}
+
+.stars {
+    color: #f59e0b;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.testimonial-author {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 12px;
+}
+
+/* --- FAQ accordion --- */
+.faq {
+    padding: 40px 20px;
+}
+
+.faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-list details {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    background: #fff;
+}
+
+.faq-list summary {
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-right: 24px;
+}
+
+.faq-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-list summary::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 1.3rem;
+    color: #2563eb;
+    transition: transform 0.2s;
+}
+
+.faq-list details[open] summary::after {
+    content: "−";
+}
+
+.faq-list details p {
+    margin: 12px 0 0;
+    color: #555;
+}
+
+/* --- Contact alternative --- */
+.contact-alt {
+    margin-top: 16px;
+    font-size: 0.95rem;
+}
+
+.contact-alt a {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* --- Modal improvements (extends your existing .custom-modal) --- */
+/* .custom-modal[hidden] {
+    display: none !important;
+} */
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: transparent;
+    border: 0;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #666;
+    padding: 4px 8px;
+}
+
+.modal-close:hover {
+    color: #111;
+}
+
+.modal-product {
+    font-weight: 600;
+    color: #2563eb;
+    margin: 0 0 16px;
+}
+
+.form-message {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.form-message.form-success {
+    display: block;
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.form-message.form-error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Make modal scroll-safe on small screens */
+.custom-modal .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* =============================================================
+   Landing page — corrected styles (v2)
+   ============================================================= */
+
+/* --- Prevent page scroll when a modal is open --- */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* --- Hero CTA group: centered + stacked cleanly --- */
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0 0;
+    width: 100%;
+    max-width: 320px;
+    align-items: stretch;
+}
+
+.hero-cta .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero-cta .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Secondary (outline) button — force blue */
+.hero-cta .btn-secondary,
+.btn.btn-secondary {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: 2px solid #2563eb !important;
+}
+
+.hero-cta .btn-secondary:hover,
+.btn.btn-secondary:hover {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
+}
+
+/* --- Nav "Try Live Demo" link: clean pill, not a white box --- */
+#primaryNav .nav-demo-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #2563eb;
+    color: #ffffff !important;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+#primaryNav .nav-demo-link:hover {
+    background: #1d4ed8;
+    color: #ffffff !important;
+}
+
+/* On mobile, the pill fills the row nicely */
+@media (max-width: 820px) {
+    #primaryNav .nav-demo-link {
+        display: block;
+        text-align: center;
+        margin-top: 8px;
+    }
+}
+
+/* --- Make sure reserve buttons are block-level (full width) --- */
+.inventory-card .reserve-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+/* --- Modal positioning hardening (compatible with existing .custom-modal) --- */
+#reservationModal,
+#demoLoginModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1000;
+    /* display is set to flex/none by JS */
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    overflow-y: auto;
+}
+
+#reservationModal .modal-content,
+#demoLoginModal .modal-content {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 28px 24px 24px;
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    margin: auto;
+}
+
+#reservationModal h2,
+#demoLoginModal h2 {
+    margin: 0 0 8px;
+    font-size: 1.35rem;
+}
+
+#reservationModal label,
+#demoLoginModal label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #333;
+}
+
+#reservationModal input,
+#demoLoginModal input {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+#reservationModal input:focus,
+#demoLoginModal input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: inherit;
+    border: 0;
+    transition: background 0.15s ease;
+}
+
+.cancel-btn {
+    background: #e5e7eb;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background: #d1d5db;
+}
+
+.confirm-btn {
+    background: #2563eb;
+    color: #fff;
+}
+
+.confirm-btn:hover {
+    background: #1d4ed8;
+}
+
+.confirm-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* --- Prevent body scroll when any modal is open --- */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* =============================================================
+   HERO — FINAL OVERRIDE BLOCK (v4 — inset with white side margins)
+   ============================================================= */
+
+/* White background behind the inset hero (matches site page bg) */
+body {
+    background: #ffffff;
+}
+
+section.hero {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 600px !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 80px 24px !important;
+    margin: 24px 48px !important;        /* ← inset from page edges */
+    border-radius: 16px !important;      /* soft corners */
+    overflow: hidden !important;
+    color: #fff !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Background image — now scoped inside the inset container */
+section.hero > img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    z-index: 0 !important;
+    margin: 0 !important;
+    border-radius: inherit !important;
+}
+
+/* Dark overlay for readability */
+section.hero::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    /* background: rgba(0, 0, 0, 0.5) !important; */
+    z-index: 1 !important;
+    pointer-events: none !important;
+    border-radius: inherit !important;
+}
+
+/* Content */
+section.hero .hero-content {
+    position: relative !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 16px !important;
+    max-width: 760px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+section.hero .hero-content h1 {
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: clamp(1.75rem, 4vw, 2.6rem) !important;
+    line-height: 1.25 !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+section.hero .hero-content p {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.94) !important;
+    font-size: clamp(1rem, 1.5vw, 1.1rem) !important;
+    line-height: 1.55 !important;
+    max-width: 620px !important;
+}
+
+section.hero .hero-cta {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    margin: 12px auto 0 !important;
+    padding: 0 !important;
+}
+
+section.hero .hero-cta .btn,
+section.hero .hero-cta .btn-secondary {
+    display: block !important;
+    width: 100% !important;
+    padding: 14px 22px !important;
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: 2px solid #2563eb !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease !important;
+    cursor: pointer !important;
+}
+
+section.hero .hero-cta .btn:hover,
+section.hero .hero-cta .btn-secondary:hover {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3) !important;
+}
+
+section.hero .hero-trust {
+    display: block !important;
+    margin: 8px 0 0 !important;
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.2px !important;
+    text-align: center !important;
+}
+
+/* Responsive — tighten margins on smaller screens */
+@media (max-width: 900px) {
+    section.hero {
+        margin: 16px 24px !important;
+        border-radius: 12px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    section.hero {
+        min-height: 560px !important;
+        padding: 60px 20px !important;
+        margin: 12px 16px !important;
+        border-radius: 10px !important;
+    }
+    section.hero .hero-cta {
+        max-width: 100% !important;
+    }
+}
+
+/* =============================================================
+   PHASE 1 — Photo Upload + Multi-Photo Manager
+   ============================================================= */
+
+/* --- Drag-and-drop zone (dashboard upload) --- */
+.photo-dropzone {
+    border: 2px dashed #ccd4dd;
+    border-radius: 10px;
+    padding: 28px 20px;
+    text-align: center;
+    background: #fafbfc;
+    transition: background 0.15s, border-color 0.15s;
+    margin-top: 8px;
+}
+
+.photo-dropzone.drag-active {
+    background: #eef5ff;
+    border-color: #2563eb;
+}
+
+.dropzone-hint {
+    margin: 0 0 6px;
+    color: #444;
+    font-size: 1rem;
+}
+
+.dropzone-browse {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.dropzone-note {
+    margin: 6px 0 0;
+    color: #777;
+    font-size: 0.85rem;
+}
+
+/* --- Upload preview grid (dashboard) --- */
+.photo-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.preview-item {
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- Photo manager (edit page) --- */
+.edit-photo h2 {
+    margin-bottom: 16px;
+    color: #003366;
+    text-align: left;
+}
+
+.photo-manager-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.photo-manager-item {
+    position: relative;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s;
+}
+
+.photo-manager-item.is-primary {
+    border: 2px solid #ff6600;
+    box-shadow: 0 4px 14px rgba(255,102,0,0.2);
+}
+
+.photo-manager-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    background: #f9f9f9;
+}
+
+.primary-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #ff6600;
+    color: #fff;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.photo-manager-actions {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    background: #f7f7f7;
+}
+
+.photo-manager-actions .inline-form {
+    flex: 1;
+    margin: 0;
+}
+
+.photo-btn-primary,
+.photo-btn-delete {
+    width: 100%;
+    padding: 6px 4px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.photo-btn-primary {
+    background: #0066cc;
+    color: #fff;
+}
+
+.photo-btn-primary:hover {
+    background: #0052a3;
+}
+
+.photo-btn-delete {
+    background: #cc0000;
+    color: #fff;
+}
+
+.photo-btn-delete:hover {
+    background: #a30000;
+}
+
+.no-photos {
+    color: #888;
+    font-style: italic;
+    padding: 16px;
+    background: #f7f7f7;
+    border-radius: 8px;
+}
+
+.add-photo-form {
+    background: #f7f9fc;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #e5eaf0;
+}
+
+.add-photo-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #003366;
+}
+
+.add-photo-form input[type="file"] {
+    display: block;
+    width: auto;
+    margin-bottom: 12px;
+}
+
+.max-photos-msg {
+    color: #92400e;
+    background: #fef3c7;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #f0d98c;
+}
+
+/* --- Flash messages (if you don't already style .flash-msg via a wrapper) --- */
+.flash-msg {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+/* =============================================================
+   Save Changes button — matches site-wide orange button style
+   ============================================================= */
+.save-btn {
+    display: inline-block;
+    background: #ff6600;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.15s ease;
+}
+
+.save-btn:hover {
+    background: #e65c00;
+}
+
+.save-btn:active {
+    background: #cc5200;
+}
+
+/* =============================================================
+   Phase 1.5 — Tenant switcher (admin testing tool)
+   ============================================================= */
+.tenant-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff3cd;
+    border: 1px solid #f0d98c;
+    padding: 8px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
+.tenant-switcher label {
+    margin: 0;
+    color: #6b4b00;
+    font-weight: 600;
+    display: inline;
+}
+.tenant-switcher select {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 0.95rem;
+    border: 1px solid #d1a800;
+    border-radius: 4px;
+}
+
+/* =============================================================
+   PHASE 2 — Inventory list (filters, table, pagination, bulk bar)
+   ============================================================= */
+
+/* --- Filters bar --- */
+.filters-bar {
+    background: #f7f9fc;
+    border: 1px solid #e5eaf0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 130px;
+}
+
+.filter-group label {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #003366;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.filter-group input,
+.filter-group select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccd4dd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: #ff6600;
+    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+}
+
+.filter-search { flex: 1 1 220px; }
+.filter-price  { min-width: 200px; }
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.price-range input {
+    width: 90px;
+}
+.price-range span {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.filter-buttons {
+    flex-direction: row;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.filter-buttons .upload-btn {
+    margin-top: 0;
+    padding: 10px 18px;
+}
+
+.filter-buttons .cancel-btn {
+    background: #e5e7eb;
+    color: #333;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.filter-buttons .cancel-btn:hover {
+    background: #d1d5db;
+}
+
+/* --- Results summary --- */
+.results-summary {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    color: #555;
+}
+.results-summary a {
+    color: #ff6600;
+    text-decoration: underline;
+}
+
+/* --- Inventory table --- */
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.inventory-table thead th {
+    background: #003366;
+    color: #fff;
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.inventory-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eef1f5;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.inventory-table tbody tr:hover {
+    background: #fafbfd;
+}
+
+.inventory-table .price-col {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.inventory-table .bulk-col {
+    width: 40px;
+    text-align: center;
+    padding-left: 12px;
+    padding-right: 8px;
+}
+
+.inventory-table .bulk-col input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #ff6600;
+}
+
+.inventory-table tfoot .totals-row td {
+    background: #f7f9fc;
+    font-weight: 700;
+    border-top: 2px solid #ccd4dd;
+    border-bottom: none;
+    padding: 14px;
+    font-size: 0.95rem;
+}
+
+/* --- Status badges --- */
+.status-badge-available {
+    display: inline-block;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.status-badge-sold {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* --- Bulk action bar --- */
+.bulk-bar {
+    position: sticky;
+    bottom: 16px;
+    margin-top: 12px;
+    background: #003366;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    z-index: 50;
+}
+
+.bulk-bar[hidden] {
+    display: none !important;
+}
+
+.bulk-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.bulk-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.bulk-sold   { background: #ff9800; color: #fff; }
+.bulk-sold:hover   { background: #e08900; }
+.bulk-delete { background: #cc0000; color: #fff; }
+.bulk-delete:hover { background: #a30000; }
+.bulk-cancel { background: #e5e7eb; color: #333; }
+.bulk-cancel:hover { background: #d1d5db; }
+
+/* --- Pagination --- */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-top: 20px;
+    padding: 12px 0;
+}
+
+.page-btn {
+    display: inline-block;
+    min-width: 36px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #ccd4dd;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.page-btn:hover:not(.disabled):not(.current) {
+    background: #f7f9fc;
+    border-color: #ff6600;
+    color: #ff6600;
+}
+
+.page-btn.current {
+    background: #ff6600;
+    border-color: #ff6600;
+    color: #fff;
+    cursor: default;
+}
+
+.page-btn.disabled {
+    color: #bbb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.page-info {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* --- Empty state --- */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f7f9fc;
+    border-radius: 10px;
+    color: #666;
+    font-size: 1rem;
+}
+
+.empty-state a {
+    color: #ff6600;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* --- Mobile tweaks --- */
+@media (max-width: 768px) {
+
+    .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group,
+    .filter-search,
+    .filter-price {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .filter-buttons {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .filter-buttons .upload-btn,
+    .filter-buttons .cancel-btn {
+        flex: 1;
+        text-align: center;
+    }
+
+    .inventory-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .bulk-bar {
+        flex-direction: column;
+        align-items: stretch;
+        bottom: 8px;
+    }
+
+    .bulk-actions {
+        justify-content: stretch;
+    }
+
+    .bulk-btn {
+        flex: 1;
+    }
+
+    .page-info {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Reservation success state — centered green confirmation */
+.form-message.form-success {
+    display: block;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 24px 20px;
+    background: #d1fae5;
+    color: #065f46;
+    border-radius: 10px;
+    border: 1px solid #a7f3d0;
+    margin: 20px 0;
+}
+
+/* =============================================================
+   Visit Our Store — Map + Info Card
+   ============================================================= */
+
+.visit-us {
+    padding: 60px 10% 80px;
+    background: #ffffff;
+}
+
+.visit-us-subtitle {
+    text-align: center;
+    color: #666;
+    margin: -4px 0 40px;
+    font-size: 1.05rem;
+}
+
+.visit-us-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+/* --- Map --- */
+.visit-us-map {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    min-height: 420px;
+    position: relative;
+}
+
+.store-map {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    background: #eef2f7;
+    z-index: 0;
+}
+
+/* Custom red pin (created via CSS, no image needed) */
+.custom-map-pin {
+    background: transparent;
+    border: none;
+}
+
+.pin-dot {
+    width: 22px;
+    height: 22px;
+    background: #ff6600;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.3),
+                0 3px 10px rgba(0, 0, 0, 0.25);
+    animation: pin-pulse 2s infinite;
+}
+
+@keyframes pin-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.3),
+                           0 3px 10px rgba(0, 0, 0, 0.25); }
+    50%      { box-shadow: 0 0 0 10px rgba(255, 102, 0, 0.15),
+                           0 3px 10px rgba(0, 0, 0, 0.25); }
+}
+
+/* --- Info card --- */
+.visit-us-info {
+    background: #f7f9fc;
+    border-radius: 12px;
+    padding: 32px 28px;
+    border: 1px solid #e5eaf0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.store-brand h3 {
+    margin: 0;
+    color: #003366;
+    font-size: 1.5rem;
+}
+
+.store-tagline {
+    margin: 4px 0 0;
+    color: #ff6600;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.info-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: #333;
+}
+
+.info-row strong {
+    color: #003366;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.info-row a {
+    color: #003366;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.info-row a:hover {
+    color: #ff6600;
+    text-decoration: underline;
+}
+
+.info-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+    flex: 0 0 auto;
+    margin-top: 2px;
+}
+
+.hours-line {
+    display: inline-block;
+    margin: 2px 0;
+}
+
+.hours-line em {
+    color: #cc0000;
+    font-style: normal;
+    font-weight: 600;
+}
+
+/* --- CTA button --- */
+.visit-us-btn {
+    display: inline-block;
+    background: #ff6600;
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: auto;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.visit-us-btn:hover {
+    background: #e65c00;
+    transform: translateY(-1px);
+    color: #fff;
+}
+
+/* --- Mobile --- */
+@media (max-width: 900px) {
+    .visit-us-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .visit-us-map,
+    .store-map {
+        min-height: 320px;
+    }
+
+    .visit-us {
+        padding: 40px 6% 60px;
+    }
+}
+
+/* Leaflet popup style override — brand colors */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+
+.leaflet-popup-content {
+    font-family: inherit;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.leaflet-popup-content a {
+    color: #ff6600;
+    font-weight: 600;
+}
+
+/* =============================================================
+   Business Demo — approximate location hint
+   ============================================================= */
+
+.demo-location {
+    margin-top: 40px;
+    padding: 32px 20px 24px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.demo-location-title {
+    text-align: center;
+    color: #ffffff;
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.demo-location-subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 20px;
+    font-size: 0.95rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.demo-map {
+    width: 100%;
+    height: 320px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    background: #eef2f7;
+    z-index: 0;
+}
+
+.demo-location-note {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.82rem;
+    margin: 12px 0 0;
+    font-style: italic;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .demo-map {
+        height: 260px;
+    }
+    .demo-location {
+        padding: 24px 12px 20px;
+        margin-top: 30px;
+    }
+    .demo-location-title {
+        font-size: 1.05rem;
+    }
 }

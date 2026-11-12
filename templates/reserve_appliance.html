@@ -34,7 +34,7 @@
             <p><strong>Condition:</strong> {{ item[6] }}</p>
 
                 <form method="POST" action="/reserve_appliance/submit-reservation/{{ item[0] }}">
-
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <label for="customer_name">Customer Name</label>
                     <input type="text" id="customer_name" name="customer_name" required>
 

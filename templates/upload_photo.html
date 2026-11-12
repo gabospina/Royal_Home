@@ -13,6 +13,7 @@
         <form method="POST"
               action="/upload-photo/{{ item[0] }}"
               enctype="multipart/form-data">
+            <form method="POST" action="/restore/{{ item[0] }}"></form>  
             <label for="photo">Select Photo</label>
             <input type="file" id="photo" name="photo" accept="image/*" required>
             <button class="upload-btn" type="submit">Upload</button>

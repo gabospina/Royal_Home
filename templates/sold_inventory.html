@@ -100,7 +100,7 @@
                     <form
                         method="POST"
                         action="/restore/{{ item[0] }}">
-
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button
                             class="restore-btn"
                             type="submit">

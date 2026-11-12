@@ -256,28 +256,153 @@ Discount Appliance Outlet
 </section>
 
 
-<section class="contact" id="contact">
-    <h2 class="section-title" style="color:white;">
-    Visit Our Store
-    </h2>
-    <div class="contact-details">
-        <h3>The Royal Home</h3>
-        <h3>Discount Appliance Outlet</h3>
-        <p>3237 Sources Blvd, DDO, Quebec, H9B 1Z6</p>
-        <a href="tel:+18777756257" class="btn">Call Us Today - (877) 775-6257</a>
-        <p>--</p>
-        <p>info@theroyalhome.ca</p>
-        <p>Monday - Saturday: 9:00 AM - 6:00 PM</p>
-        <p>Sunday: Closed</p>
-        <br>
-        
+<!-- ============================================================
+     Visit Our Store — Address, Hours, Interactive Map
+     ============================================================ -->
+<section id="visit-us" class="visit-us">
+
+    <h2 class="section-title">Visit Our Store</h2>
+
+    <p class="visit-us-subtitle">
+        Come see our selection in person — we're ready to help.
+    </p>
+
+    <div class="visit-us-grid">
+
+        <!-- ======================================================== -->
+        <!-- LEFT: Interactive Map                                    -->
+        <!-- ======================================================== -->
+        <div class="visit-us-map">
+            <div id="storeMap" class="store-map"
+                 role="img"
+                 aria-label="Map showing The Royal Home at 3237 Sources Blvd, Dollard-des-Ormeaux, Quebec"></div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- RIGHT: Store info card                                   -->
+        <!-- ======================================================== -->
+        <div class="visit-us-info">
+
+            <div class="store-brand">
+                <h3>The Royal Home</h3>
+                <p class="store-tagline">Discount Appliance Outlet</p>
+            </div>
+
+            <div class="info-row">
+                <span class="info-icon" aria-hidden="true">📍</span>
+                <div>
+                    <strong>Address</strong><br>
+                    3237 Sources Blvd<br>
+                    Dollard-des-Ormeaux, QC<br>
+                    H9B 1Z6, Canada
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="info-icon" aria-hidden="true">📞</span>
+                <div>
+                    <strong>Call Us Today</strong><br>
+                    <a href="tel:+18777756257">(877) 775-6257</a>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="info-icon" aria-hidden="true">✉️</span>
+                <div>
+                    <strong>Email</strong><br>
+                    <a href="mailto:info@theroyalhome.ca">info@theroyalhome.ca</a>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="info-icon" aria-hidden="true">🕒</span>
+                <div>
+                    <strong>Store Hours</strong><br>
+                    <span class="hours-line">Monday – Saturday: 9:00 AM – 6:00 PM</span><br>
+                    <span class="hours-line">Sunday: <em>Closed</em></span>
+                </div>
+            </div>
+
+            <a
+                href="https://www.google.com/maps/dir/?api=1&destination=3237+Sources+Blvd,+Dollard-des-Ormeaux,+QC+H9B+1Z6,+Canada"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="visit-us-btn">
+
+                Get Directions →
+
+            </a>
+
+        </div>
+
     </div>
 
 </section>
 
+<!-- ============================================================ -->
+<!-- Leaflet CSS (map library)                                    -->
+<!-- ============================================================ -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="">
+
+<!-- ============================================================ -->
+<!-- Leaflet JS + map initialization                              -->
+<!-- ============================================================ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+(function () {
+    // Store location — exact address
+    var STORE_LAT = 45.4842;     // approximate lat for 3237 Sources Blvd, DDO
+    var STORE_LNG = -73.7883;    // approximate lng
+
+    var mapEl = document.getElementById('storeMap');
+    if (!mapEl || typeof L === 'undefined') return;
+
+    var map = L.map('storeMap', {
+        scrollWheelZoom: false,     // prevents page scroll from getting stuck in map
+        attributionControl: true,
+    }).setView([STORE_LAT, STORE_LNG], 16);
+
+    // Tile layer (OpenStreetMap — free, no API key)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // Custom red pin marker (no external image needed)
+    var redIcon = L.divIcon({
+        className: 'custom-map-pin',
+        html: '<div class="pin-dot"></div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+    });
+
+    var marker = L.marker([STORE_LAT, STORE_LNG], { icon: redIcon }).addTo(map);
+
+    marker.bindPopup(
+        '<strong>The Royal Home</strong><br>' +
+        '3237 Sources Blvd<br>' +
+        'Dollard-des-Ormeaux, QC<br>' +
+        '<a href="https://www.google.com/maps/dir/?api=1&destination=3237+Sources+Blvd,+Dollard-des-Ormeaux,+QC+H9B+1Z6" target="_blank" rel="noopener">Get Directions</a>'
+    ).openPopup();
+
+    // Enable scroll zoom only after user clicks the map
+    map.on('click', function () {
+        map.scrollWheelZoom.enable();
+    });
+})();
+</script>
+
 <footer>
     <p>
-        © 2026 Discount Appliance Outlet. All Rights <a href="#" class="hidden-link" id="reservedLink">Reserved</a>.
+        © 2026 Discount Appliance Outlet. All Rights Reserved.
+        <a href="/login" class="hidden-link" title="">·</a>
     </p>
 </footer>
 
@@ -332,62 +457,7 @@ Discount Appliance Outlet
     </div>
 
 </div>
-<script>
 
-document.getElementById("reservedLink").addEventListener("click", function(e) {
-    e.preventDefault();
-    document.getElementById("managerLoginModal").style.display = "flex";
-    document.getElementById("loginError").style.display = "none";
-    document.getElementById("modal_username").value = "";
-    document.getElementById("modal_password").value = "";
-    document.getElementById("modal_username").focus();
-});
-
-function closeLoginModal() {
-    document.getElementById("managerLoginModal").style.display = "none";
-}
-
-window.addEventListener("click", function(e) {
-    const modal = document.getElementById("managerLoginModal");
-    if (e.target === modal) closeLoginModal();
-});
-
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") closeLoginModal();
-});
-
-// AJAX submit
-document.getElementById("managerLoginForm").addEventListener("submit", function(e) {
-
-    e.preventDefault();
-
-    const form = e.target;
-    const errorBox = document.getElementById("loginError");
-
-    fetch("/login", {
-        method: "POST",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        body: new FormData(form)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = data.redirect;
-        } else {
-            errorBox.textContent = data.error || "Login failed.";
-            errorBox.style.display = "block";
-        }
-    })
-    .catch(() => {
-        errorBox.textContent = "Server error. Please try again.";
-        errorBox.style.display = "block";
-    });
-
-});
-
-</script>
 <script
     src="{{ url_for('static', filename='js/script.js') }}">
 </script>

@@ -4,124 +4,11 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<title>Edit {{ bt.name }} — {{ item[1] }}</title>
 
-<title>Edit Appliance</title>
-<link
-    rel="stylesheet"
-    href="{{ url_for(
-        'static',
-        filename='css/style.css'
-    ) }}">
-<!-- <style>
-
-body{
-    font-family:Arial, sans-serif;
-    background:#f4f4f4;
-    padding:30px;
-}
-
-.container{
-    max-width:900px;
-    margin:auto;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
-}
-
-h1{
-    color:#003366;
-    margin-bottom:20px;
-}
-
-label{
-    display:block;
-    margin-bottom:5px;
-    font-weight:bold;
-    color:#003366;
-}
-
-.form-row{
-    display:flex;
-    gap:60px;
-    margin-bottom:15px;
-}
-
-.form-group{
-    flex:0 0 235px;
-}
-
-.form-group input{
-    width:100%;
-    padding:8px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
-
-/* Category box size */
-select{
-    width:250px;
-    padding:8px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
-
-/* Condition box text area */
-textarea{
-    width:70%;
-    min-height:60px;
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
-
-.save-btn{
-    background:#ff6600;
-    color:white;
-
-    border:none;
-
-    padding:12px 20px;
-
-    border-radius:5px;
-
-    cursor:pointer;
-}
-
-.save-btn:hover{
-    background:#e65c00;
-}
-
-.edit-photo{
-    margin-top:25px;
-    text-align:center;
-}
-
-.edit-photo img{
-    max-width:300px;
-    max-height:300px;
-    border-radius:10px;
-    border:1px solid #ddd;
-}
-
-.missing-photo{
-    background:#ffc107;
-    color:black;
-
-    padding:10px;
-
-    margin-top:10px;
-
-    font-weight:bold;
-}
-
-</style> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -129,178 +16,191 @@ textarea{
 
 <div class="container">
 
-<div class="card">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash-msg">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-<a
-    href="/dashboard"
-    class="inventory-btn">
+    <div class="card">
 
-    Return to Dashboard
-</a>
-<a
-    href="/logout"
-    class="inventory-btn">
-    Logout
-</a>
+        <a href="/dashboard" class="inventory-btn">Return to Dashboard</a>
+        <a href="/logout" class="inventory-btn">Logout</a>
 
+        <br><br>
 
-<br><br>
+        <h1>{{ bt.edit_title }}</h1>
 
-<h1>Edit Appliance</h1>
+        <form method="POST" action="/update/{{ item[0] }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-<form
-    method="POST"
-    action="/update/{{ item[0] }}">
+            <div class="form-row">
 
-    <div class="form-row">
+                <div class="form-group">
+                    <label for="product_name">Product Name</label>
+                    <input
+                        type="text"
+                        id="product_name"
+                        name="product_name"
+                        value="{{ item[1] if item[1] is not none else '' }}">
+                </div>
 
-        <div class="form-group">
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <input
+                        type="text"
+                        id="brand"
+                        name="brand"
+                        value="{{ item[2] if item[2] is not none else '' }}">
+                </div>
 
-            <label for="product_name">
-                Product Name
-            </label>
+            </div>
 
-            <input
-                type="text"
-                id="product_name"
-                name="product_name"
-                value="{{ item[1] if item[4] is not none else '' }}">
+            <div class="form-row">
 
-        </div>
+                <div class="form-group">
+                    <label for="model">{{ bt.model_label }}</label>
 
-        <div class="form-group">
+                    {% if bt.model_type == 'select' %}
+                        <select id="model" name="model">
+                            <option value="">-- Select {{ bt.model_label }} --</option>
+                            {% for opt in bt.model_options %}
+                                <option value="{{ opt }}" {% if item[3] == opt %}selected{% endif %}>{{ opt }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input
+                            type="text"
+                            id="model"
+                            name="model"
+                            value="{{ item[3] if item[3] is not none else '' }}">
+                    {% endif %}
+                </div>
 
-            <label for="brand">
-                Brand
-            </label>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="price"
+                        name="price"
+                        value="{{ item[4] if item[4] is not none else '' }}">
+                </div>
 
-            <input
-                type="text"
-                id="brand"
-                name="brand"
-                value="{{ item[2] if item[4] is not none else '' }}">
+            </div>
+
+            <label for="category">{{ bt.category_label }}</label>
+            <select id="category" name="category">
+                <option value="">-- Select {{ bt.category_label }} --</option>
+                {% for cat in bt.categories %}
+                    <option value="{{ cat }}" {% if item[5] == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+
+            <br><br>
+
+            <label for="condition">{{ bt.condition_label }}</label>
+            <textarea
+                id="condition"
+                name="condition"
+                placeholder="{{ bt.condition_placeholder }}">{{ item[6] if item[6] is not none else '' }}</textarea>
+
+            <br>
+
+            <button class="save-btn" type="submit">{{ bt.save_title }}</button>
+
+        </form>
+
+        <!-- ================================================== -->
+        <!-- Photo manager                                       -->
+        <!-- ================================================== -->
+        <div class="edit-photo">
+
+            <h2>Photos ({{ photos|length }} / {{ max_photos }})</h2>
+
+            {% if photos %}
+
+            <div class="photo-manager-grid">
+
+                {% for photo in photos %}
+                <div class="photo-manager-item {% if photo[3] %}is-primary{% endif %}">
+
+                    <img
+                        src="{{ url_for('static', filename='images/uploads/thumbs/' + photo[2]) }}"
+                        alt="Photo {{ loop.index }}">
+
+                    {% if photo[3] %}
+                    <span class="primary-badge">PRIMARY</span>
+                    {% endif %}
+
+                    <div class="photo-manager-actions">
+
+                        {% if not photo[3] %}
+                        <form method="POST" action="/photo/{{ photo[0] }}/primary" class="inline-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="photo-btn-primary">Set Primary</button>
+                        </form>
+                        {% endif %}
+
+                        <form
+                            method="POST" action="/photo/{{ photo[0] }}/delete" class="inline-form"
+                            onsubmit="return confirm('Delete this photo?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="photo-btn-delete">Delete</button>
+                        </form>
+
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <p class="no-photos">No photos yet. Upload the first one below.</p>
+
+            {% endif %}
+
+            {% if photos|length < max_photos %}
+
+            <form
+                method="POST"
+                action="/photo/upload/{{ item[0] }}"
+                enctype="multipart/form-data"
+                class="add-photo-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="new_photos">Add more photos</label>
+
+                <input
+                    type="file"
+                    id="new_photos"
+                    name="photos"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    required>
+
+                <button type="submit" class="upload-btn">Upload</button>
+
+            </form>
+
+            {% else %}
+
+            <p class="max-photos-msg">
+                Maximum {{ max_photos }} photos reached. Delete one to add another.
+            </p>
+
+            {% endif %}
 
         </div>
 
     </div>
-
-    <div class="form-row">
-
-        <div class="form-group">
-
-            <label for="model">
-                Model
-            </label>
-
-            <input
-                type="text"
-                id="model"
-                name="model"
-                value="{{ item[3] if item[4] is not none else '' }}">
-
-        </div>
-
-        <div class="form-group">
-
-            <label for="price">
-                Price
-            </label>
-
-            <input
-                type="number"
-                step="0.01"
-                id="price"
-                name="price"
-                value="{{ item[4] if item[4] is not none else '' }}">
-
-        </div>
-
-    </div>
-
-    <label for="category">
-        Category
-    </label>
-
-    <select
-        id="category"
-        name="category">
-
-        <option value="">
-            -- Select Category --
-        </option>
-
-        <option value="Refrigerator" {% if item[5] == 'Refrigerator' %}selected{% endif %}>
-            Refrigerator
-        </option>
-
-        <option value="Washer" {% if item[5] == 'Washer' %}selected{% endif %}>
-            Washer
-        </option>
-
-        <option value="Dryer" {% if item[5] == 'Dryer' %}selected{% endif %}>
-            Dryer
-        </option>
-
-        <option value="Oven" {% if item[5] == 'Oven' %}selected{% endif %}>
-            Oven
-        </option>
-
-    </select>
-
-    <br><br>
-
-    <label for="condition">
-        Condition
-    </label>
-
-    <textarea
-        id="condition"
-        name="condition">{{ item[6] }}</textarea>
-
-    <br>
-
-    <button
-        class="save-btn"
-        type="submit">
-
-        Save Changes
-
-    </button>
-
-</form>
-
-<div class="edit-photo">
-
-{% if item[7] == 'no-image.png' %}
-
-    <img
-    src="{{ url_for(
-        'static',
-        filename='images/no-image.png'
-    ) }}"
-    alt="No Image">
-
-    <div class="missing-photo">
-        ⚠ Photo Needed
-    </div>
-
-{% else %}
-
-    <img
-    src="{{ url_for(
-        'static',
-        filename='images/uploads/' + item[7]
-    ) }}"
-    alt="{{ item[1] }}">
-
-{% endif %}
-
-</div>
-
-</div>
 
 </div>
 
 </body>
-
 </html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Too Many Requests</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .error-card {
+            background: white;
+            padding: 48px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            max-width: 440px;
+            text-align: center;
+        }
+        .error-code {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #ff6600;
+            margin: 0 0 8px;
+            line-height: 1;
+        }
+        .error-card h1 {
+            color: #003366;
+            margin: 0 0 16px;
+            font-size: 1.4rem;
+        }
+        .error-card p {
+            color: #555;
+            line-height: 1.6;
+            margin: 0 0 24px;
+        }
+        .error-card a {
+            display: inline-block;
+            background: #ff6600;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-card a:hover {
+            background: #e65c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-code">429</div>
+        <h1>Too Many Requests</h1>
+        <p>
+            You've made too many requests in a short period.
+            Please wait a minute and try again.
+        </p>
+        <a href="javascript:history.back()">Go Back</a>
+    </div>
+</body>
+</html>

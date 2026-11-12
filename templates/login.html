@@ -3,27 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/style.css">
   <title>Manager Login</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #f4f4f4;
+      margin: 0;
+    }
+    .login-card {
+      background: #ffffff;
+      padding: 40px 36px;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 380px;
+      box-sizing: border-box;
+    }
+    .login-card h2 {
+      color: #003366;
+      text-align: center;
+      margin: 0 0 24px;
+      font-size: 24px;
+    }
+    .login-card label {
+      display: block;
+      font-weight: 600;
+      color: #003366;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .login-card input[type="text"],
+    .login-card input[type="password"] {
+      display: block;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+      font-family: inherit;
+      box-sizing: border-box;
+      margin-bottom: 18px;
+    }
+    .login-card input:focus {
+      outline: none;
+      border-color: #ff6600;
+      box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+    }
+    .login-card .upload-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .login-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <h2>Manager Login</h2>
+  <div class="login-card">
+    <h2>Manager Login</h2>
 
-  {% if error %}
-    <p style="color: red;">{{ error }}</p>
-  {% endif %}
+    {% if error %}
+      <div class="login-error">{{ error }}</div>
+    {% endif %}
 
-  <form method="POST" action="/login">
-    <label for="username">Username</label><br>
-    <input type="text" id="username" name="username" required autofocus>
+    <form method="POST" action="/login">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autofocus>
 
-    <br><br>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
 
-    <label for="password">Password</label><br>
-    <input type="password" id="password" name="password" required>
-
-    <br><br>
-
-    <button type="submit">Login</button>
-  </form>
+      <button type="submit" class="upload-btn">Login</button>
+    </form>
+  </div>
 </body>
 </html>
