@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Store-SaaS — a complete website + inventory administration platform for retail stores.">
+    <title>Store-SaaS — Inventory Platform for Retail</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header id="siteHeader">
+    <nav>
+        <div class="logo">Store-SaaS</div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primaryNav">
+            <span></span><span></span><span></span>
+        </button>
+        <ul id="primaryNav">
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#samples">Examples</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="/demo-login" class="nav-demo-link">Try Live Demo</a></li>
+            <li><button type="button" class="nav-store-login-btn" onclick="openStoreLogin()">Store Owner Login</button></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HERO                                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="saas-hero">
+    <div class="saas-hero-inner">
+
+        <div class="saas-hero-text">
+            <h1>Your store deserves a website.<br><span class="accent">And a platform that runs it.</span></h1>
+            <p class="hero-subhead">
+                Store-SaaS gives every retail business a polished online storefront —
+                plus the inventory and administration tools to keep it running smoothly.
+            </p>
+            <div class="hero-cta">
+                <a href="/demo-login" class="btn">Try The Live Demo →</a>
+                <button type="button" class="btn btn-secondary" onclick="openStoreLogin()">Store Owner Login</button>
+            </div>
+            <p class="hero-trust">Demo login: <code>demo</code> / <code>Demo123</code> · Works for any retail store</p>
+        </div>
+
+        <div class="hero-photo-grid">
+            <div class="hero-photo-card">
+                <img src="{{ url_for('static', filename='images/saas_hero/clothing-round-rack.png') }}" alt="Clothing boutique">
+                <span class="hero-photo-label">Clothing</span>
+            </div>
+            <div class="hero-photo-card">
+                <img src="{{ url_for('static', filename='images/saas_hero/toys.png') }}" alt="Toy store">
+                <span class="hero-photo-label">Toys</span>
+            </div>
+            <div class="hero-photo-card">
+                <img src="{{ url_for('static', filename='images/saas_hero/art.png') }}" alt="Art gallery">
+                <span class="hero-photo-label">Art Gallery</span>
+            </div>
+            <div class="hero-photo-card">
+                <img src="{{ url_for('static', filename='images/saas_hero/refrigerator-1.png') }}" alt="Appliance store">
+                <span class="hero-photo-label">Appliances</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOW IT WORKS                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="how" class="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>We build your site</h3>
+            <p>A ready-to-use storefront tailored to your business — clothing, appliances, toys, art, and more.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>You manage inventory</h3>
+            <p>Upload products, photos, prices, and stock levels from one simple dashboard — from any device.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Customers reserve online</h3>
+            <p>Leads arrive in your dashboard with name, phone, and product. Follow up and close sales.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FEATURES                                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="features">
+    <h2 class="section-title">Everything Your Store Needs</h2>
+    <div class="features">
+        <div class="feature-box">
+            <h3>Public Storefront</h3>
+            <p>A beautiful customer-facing site showing your products, hours, and location.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Inventory Dashboard</h3>
+            <p>Manage products, photos, and prices from one place — on desktop or mobile.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Multi-Photo Per Item</h3>
+            <p>Show up to 8 photos per product — angles, details, and variations.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Online Reservations</h3>
+            <p>Customers reserve products directly from your storefront. Leads arrive in your dashboard.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Excel Import / Export</h3>
+            <p>Bulk-update your inventory from a spreadsheet. Export for backups or reports.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Works for Any Retail</h3>
+            <p>Clothing, appliances, toys, art, furniture — one platform adapts to your industry.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SAMPLE STOREFRONT                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="samples" class="sample-showcase">
+    <h2 class="section-title">A Sample Storefront</h2>
+    <p class="section-subtitle">Here's what a Store-SaaS clothing boutique looks like:</p>
+    <div class="gallery">
+        <div class="inventory-card">
+            <span class="stock-badge stock-in">In Stock</span>
+            <img src="{{ url_for('static', filename='images/clothing-store.png') }}" alt="Sample product">
+            <h3>Summer Dress</h3>
+            <p class="price">$79.99</p>
+        </div>
+        <div class="inventory-card">
+            <span class="stock-badge stock-in">In Stock</span>
+            <img src="{{ url_for('static', filename='images/clothing-store-2.png') }}" alt="Sample product">
+            <h3>Denim Jacket</h3>
+            <p class="price">$129.99</p>
+        </div>
+        <div class="inventory-card">
+            <span class="stock-badge stock-low">Only 2 Left</span>
+            <img src="{{ url_for('static', filename='images/clothing-store-5.png') }}" alt="Sample product">
+            <h3>Leather Boots</h3>
+            <p class="price">$189.99</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TESTIMONIALS                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="testimonials">
+    <h2 class="section-title">What Store Owners Say</h2>
+    <p class="sample-note">Illustrative sample feedback (demo data).</p>
+    <div class="features">
+        <div class="feature-box testimonial">
+            <div class="stars">★★★★★</div>
+            <p>"We cut inventory admin from 8 hours a week to under 2. The Excel import alone paid for itself."</p>
+            <p class="testimonial-author">— Sample Customer, Boutique Owner</p>
+        </div>
+        <div class="feature-box testimonial">
+            <div class="stars">★★★★★</div>
+            <p>"Customers reserve online and we prepare the item before they arrive. No more phone tag."</p>
+            <p class="testimonial-author">— Sample Customer, Appliance Retailer</p>
+        </div>
+        <div class="feature-box testimonial">
+            <div class="stars">★★★★★</div>
+            <p>"I run two locations from one dashboard. Finally, inventory visibility I trust."</p>
+            <p class="testimonial-author">— Sample Customer, Sporting Goods</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FAQ                                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="faq" class="faq">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <details>
+            <summary>Can I import my existing inventory from Excel?</summary>
+            <p>Yes. Upload a spreadsheet — the platform maps common column names automatically and imports your products in seconds.</p>
+        </details>
+        <details>
+            <summary>Does it work for my type of store?</summary>
+            <p>Yes. The platform adapts to your industry — clothing boutiques see "Size" and "Materials Quality" fields; appliance stores see "Model" and "Condition"; toy stores, art galleries, mini-markets and more are supported.</p>
+        </details>
+        <details>
+            <summary>Can I show multiple photos per product?</summary>
+            <p>Yes. Upload up to 8 photos per item — front, back, detail shots, variations. Thumbnails are auto-generated for fast loading.</p>
+        </details>
+        <details>
+            <summary>What happens when a customer reserves a product?</summary>
+            <p>The reservation is saved with the customer's name, phone, and email. You see it in your dashboard and can follow up to confirm pickup.</p>
+        </details>
+        <details>
+            <summary>How do I try the platform before buying?</summary>
+            <p>Click "Try The Live Demo" at the top of this page. You'll enter a read-only demonstration with sample data. No signup, no credit card.</p>
+        </details>
+        <details>
+            <summary>Already a customer? How do I log in?</summary>
+            <p>Click "Store Owner Login" in the top navigation. Select your store and enter your password.</p>
+        </details>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CONTACT + MAP                                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="contact" id="contact">
+    <h2 class="section-title" style="color:#fff;">Ready to Modernize Your Store?</h2>
+    <div class="contact-details">
+        <h3>Schedule a Live Walkthrough</h3>
+        <p>See how Store-SaaS can give your store a modern website and the tools to run it efficiently.</p>
+        <a href="mailto:info@theroyalhome.ca" class="btn">Request Information</a>
+        <p class="contact-alt">Prefer to explore on your own? <a href="/demo-login">Try the live demo →</a></p>
+    </div>
+
+    <div class="demo-location">
+        <h3 class="demo-location-title">Based in the West Island of Montreal</h3>
+        <p class="demo-location-subtitle">Our team is local — serving retail businesses across the greater Montreal area.</p>
+        <div id="demoMap" class="demo-map" role="img" aria-label="Approximate service area in the West Island of Montreal"></div>
+        <p class="demo-location-note">📍 Approximate service area — not a physical location</p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FOOTER                                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<footer>
+    <p>© 2026 Store-SaaS · Inventory platform for retail businesses.</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- STORE OWNER LOGIN MODAL                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="storeLoginModal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="storeLoginTitle">
+    <div class="modal-content">
+        <button type="button" class="modal-close" aria-label="Close" onclick="closeStoreLogin()">×</button>
+        <h2 id="storeLoginTitle">Store Owner Login</h2>
+        <p class="modal-subtitle">Select your store and enter your password.</p>
+        <form method="POST" action="/store-login">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="storeTenant">Store</label>
+            <select id="storeTenant" name="tenant_id" required>
+                <option value="">— Select your store —</option>
+                <option value="1">Royal Home — Appliance Store</option>
+                <option value="2">Clothing Demo — Clothing Boutique</option>
+            </select>
+            <label for="storePassword">Password</label>
+            <input type="password" id="storePassword" name="password" required autocomplete="current-password">
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" onclick="closeStoreLogin()">Cancel</button>
+                <button type="submit" class="confirm-btn">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+(function () {
+    "use strict";
+
+    // ─── Sticky header shadow ───
+    var header = document.getElementById("siteHeader");
+    window.addEventListener("scroll", function () {
+        if (window.scrollY > 8) header.classList.add("scrolled");
+        else header.classList.remove("scrolled");
+    }, { passive: true });
+
+    // ─── Mobile nav ───
+    var navToggle = document.getElementById("navToggle");
+    var primaryNav = document.getElementById("primaryNav");
+    if (navToggle && primaryNav) {
+        navToggle.addEventListener("click", function () {
+            var open = primaryNav.classList.toggle("nav-open");
+            navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+            navToggle.classList.toggle("is-open", open);
+        });
+        primaryNav.querySelectorAll("a").forEach(function (a) {
+            a.addEventListener("click", function () {
+                primaryNav.classList.remove("nav-open");
+                navToggle.setAttribute("aria-expanded", "false");
+                navToggle.classList.remove("is-open");
+            });
+        });
+    }
+
+    // ─── Store owner login modal ───
+    var storeModal = document.getElementById("storeLoginModal");
+
+    window.openStoreLogin = function () {
+        storeModal.style.display = "flex";
+        document.body.classList.add("modal-open");
+        if (history.state && history.state.modal === "store-login") {
+            // already open
+        } else {
+            history.pushState({ modal: "store-login" }, "", "/store-login");
+        }
+        var sel = document.getElementById("storeTenant");
+        if (sel) sel.focus();
+    };
+
+    window.closeStoreLogin = function () {
+        storeModal.style.display = "none";
+        document.body.classList.remove("modal-open");
+        if (history.state && history.state.modal === "store-login") {
+            history.back();
+        }
+    };
+
+    if (storeModal) {
+        storeModal.addEventListener("click", function (e) {
+            if (e.target === storeModal) window.closeStoreLogin();
+        });
+    }
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && storeModal && storeModal.style.display === "flex") {
+            window.closeStoreLogin();
+        }
+    });
+
+    // ─── Leaflet map ───
+    var AREA_LAT = 45.4692;
+    var AREA_LNG = -73.8321;
+    var RADIUS_METERS = 4500;
+
+    var mapEl = document.getElementById("demoMap");
+    if (mapEl && typeof L !== "undefined") {
+        var map = L.map("demoMap", {
+            scrollWheelZoom: false,
+            zoomControl: false,
+            attributionControl: true,
+        }).setView([AREA_LAT, AREA_LNG], 12);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        }).addTo(map);
+
+        L.circle([AREA_LAT, AREA_LNG], {
+            radius: RADIUS_METERS,
+            color: "#ff6600", weight: 2,
+            fillColor: "#ff6600", fillOpacity: 0.12,
+        }).addTo(map);
+
+        L.circleMarker([AREA_LAT, AREA_LNG], {
+            radius: 6, color: "#ffffff", weight: 2,
+            fillColor: "#ff6600", fillOpacity: 1,
+        }).addTo(map);
+
+        map.on("click", function () { map.scrollWheelZoom.enable(); });
+    }
+
+})();
+</script>
+
+</body>
+</html>

@@ -29,6 +29,25 @@ ADMIN_USER = os.environ.get("ADMIN_USER")
 ADMIN_PASS_HASH = os.environ.get("ADMIN_PASS_HASH")
 
 # ---------------------------------------------------------------
+# STORE-SAAS DEPLOYMENT MODE
+# ---------------------------------------------------------------
+SITE_MODE = os.environ.get("SITE_MODE", "royal_home").lower()
+IS_SAAS_SITE = (SITE_MODE == "store_saas")
+
+# Store owner passwords — used by /store-login
+TENANT_PASSWORDS = {
+    1: os.environ.get("TENANT_1_PASSWORD", ""),
+    2: os.environ.get("TENANT_2_PASSWORD", ""),
+}
+
+# Sandbox admin credentials — used by "Reserved" easter egg
+DEMO_ADMIN_USER = os.environ.get("DEMO_ADMIN_USER", "")
+DEMO_ADMIN_PASS = os.environ.get("DEMO_ADMIN_PASS", "")
+
+# Tenant ID that the sandbox easter egg maps to
+SANDBOX_TENANT_ID = 2
+
+# ---------------------------------------------------------------
 # PHASE 5 — PRODUCTION HARDENING FLAGS (env-controlled)
 # ---------------------------------------------------------------
 ENV = os.environ.get("FLASK_ENV", "development").lower()
@@ -104,6 +123,41 @@ limiter = Limiter(
 limiter.init_app(app)
 
 csrf = CSRFProtect(app)
+
+# ---------------------------------------------------------------
+# SITE MODE ENFORCEMENT — block cross-mode routes
+# ---------------------------------------------------------------
+@app.before_request
+def _enforce_site_mode():
+    path = request.path
+
+    # Static files, API endpoints, and Chrome devtools check are always allowed
+    if (path.startswith("/static/")
+        or path.startswith("/api/")
+        or path.startswith("/.well-known/")):
+        return None
+
+    # ─── Royal Home site: block SaaS-only routes ───
+    if not IS_SAAS_SITE:
+        if path in ("/store-login", "/demo-admin", "/demo-admin-login"):
+            return redirect("/")
+        if path in ("/saas_landing", "/royal-home"):
+            return redirect("/")
+        return None
+
+    # ─── Store-SaaS site: block Royal Home-only routes ───
+    if IS_SAAS_SITE:
+        if path == "/login":
+            # Redirect to landing page — use Store Owner Login modal instead
+            return redirect("/")
+        if path.startswith("/business-demo"):
+            # Backward compat: /business-demo → /
+            return redirect("/")
+        if path.startswith("/reserve_appliance"):
+            return redirect("/")
+
+    return None
+
 
 # ---------------------------------------------------------------
 # PHASE 5 — SECURITY HEADERS
@@ -629,6 +683,31 @@ def current_tenant():
     conn.close()
     return row
 
+def verify_tenant_password(tenant_id, password):
+    """
+    Verify a store-owner password against the tenant's configured password.
+    Uses hmac.compare_digest for constant-time comparison (prevents timing attacks).
+    """
+    import hmac
+    expected = TENANT_PASSWORDS.get(int(tenant_id), "")
+    if not expected:
+        return False
+    return hmac.compare_digest(str(expected), str(password))
+
+
+def verify_sandbox_credentials(username, password):
+    """
+    Verify the sandbox admin credentials (used by the "Reserved" easter egg
+    on /demo-dashboard to grant interactive access to the sandbox tenant).
+    """
+    import hmac
+    if not DEMO_ADMIN_USER or not DEMO_ADMIN_PASS:
+        return False
+    return (
+        hmac.compare_digest(str(DEMO_ADMIN_USER), str(username))
+        and hmac.compare_digest(str(DEMO_ADMIN_PASS), str(password))
+    )
+
 
 def set_tenant(tid):
     """Set the current session's tenant. Also updates session.permanent."""
@@ -812,27 +891,34 @@ def _parse_pagination(args, default_per_page=25):
 @login_required
 @limiter.limit("30 per hour")
 def admin_switch_tenant(tid):
-    conn = sqlite3.connect(DB_PATH)
-    exists = conn.execute(
-        "SELECT id FROM tenants WHERE id = ? AND is_active = 1", (tid,)
-    ).fetchone()
-    conn.close()
-
-    if not exists:
-        flash(f"Tenant {tid} does not exist or is inactive.")
+    # Block in production (ALLOW_TENANT_SWITCHING=false)
+    if not ALLOW_TENANT_SWITCHING:
+        flash("Tenant switching is disabled.")
         return redirect("/dashboard")
-
-    set_tenant(tid)
-    flash(f"Now viewing as tenant {tid} ({current_tenant()[2]}).")
-    return redirect("/dashboard")
 
 
 # ---------------------------------------------------------------
 # PUBLIC ROUTES
 # ---------------------------------------------------------------
 @app.route("/")
-def home():
-    # Decision 2 = A: / always shows tenant 1 (Royal Home) storefront
+def root():
+    """Root URL — redirects to named route for clarity."""
+    if IS_SAAS_SITE:
+        return redirect("/store-saas")
+    # Royal Home mode: keep / as storefront (customer URL)
+    return _render_royal_home_storefront()
+
+
+@app.route("/store-saas")
+def store_saas_home():
+    """Store-SaaS landing page with named URL."""
+    if not IS_SAAS_SITE:
+        return redirect("/")
+    return render_template("saas_landing.html")
+
+
+def _render_royal_home_storefront():
+    """Royal Home appliance storefront."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -1908,6 +1994,8 @@ def photo_add_to_item(item_id):
 @app.route("/logout")
 def logout():
     session.clear()
+    if IS_SAAS_SITE:
+        return redirect("/store-saas")
     return redirect("/")
 
 @app.route("/.well-known/appspecific/com.chrome.devtools.json")
@@ -1951,6 +2039,40 @@ def demo_login():
         demo_pass=DEMO_PASS,
     )
 
+# ---------------------------------------------------------------
+# STORE-SAAS — Store owner login (per-tenant)
+# ---------------------------------------------------------------
+@app.route("/store-login", methods=["POST"])
+@limiter.limit("10 per minute")
+def store_login():
+    tenant_id = request.form.get("tenant_id", "").strip()
+    password = request.form.get("password", "")
+
+    try:
+        tenant_id_int = int(tenant_id)
+    except ValueError:
+        flash("Invalid store selection.")
+        return redirect("/store-saas")
+
+    conn = sqlite3.connect(DB_PATH)
+    tenant_row = conn.execute(
+        "SELECT id, name FROM tenants WHERE id = ? AND is_active = 1",
+        (tenant_id_int,),
+    ).fetchone()
+    conn.close()
+
+    if not tenant_row:
+        flash("Invalid store selection.")
+        return redirect("/store-saas")
+
+    if not verify_tenant_password(tenant_id_int, password):
+        flash(f"Incorrect password for {tenant_row[1]}.")
+        return redirect("/store-saas")
+
+    session["logged_in"] = True
+    set_tenant(tenant_id_int)
+    return redirect("/dashboard")
+
 @app.route("/demo-dashboard")
 def demo_dashboard():
 
@@ -1962,14 +2084,119 @@ def demo_dashboard():
         "demo_dashboard.html"
     )
 
+# ---------------------------------------------------------------
+# STORE-SAAS — Sandbox admin (interactive demo tenant)
+# ---------------------------------------------------------------
+@app.route("/demo-admin-login", methods=["POST"])
+@limiter.limit("10 per minute")
+@csrf.exempt
+def demo_admin_login():
+    username = request.form.get("username", "").strip()
+    password = request.form.get("password", "")
+        # print(f"DEBUG sandbox: user={username!r} pass={password!r} expected_user={DEMO_ADMIN_USER!r} expected_pass={DEMO_ADMIN_PASS!r}")
+
+    if not verify_sandbox_credentials(username, password):
+        flash("Invalid sandbox credentials.")
+        return redirect("/demo-dashboard")
+
+    session["demo_admin_logged_in"] = True
+    session["logged_in"] = True          # gives access to /upload, /edit, /delete
+    set_tenant(SANDBOX_TENANT_ID)
+
+    return redirect("/demo-admin")
+
+
+@app.route("/demo-admin")
+def demo_admin():
+    if not session.get("demo_admin_logged_in"):
+        return redirect("/demo-dashboard")
+
+    tid = SANDBOX_TENANT_ID
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM inventory WHERE status='Available' AND tenant_id = ? ORDER BY id DESC",
+        (tid,),
+    )
+    inventory = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM inventory WHERE status='Available' AND tenant_id = ?", (tid,)
+    )
+    available_count = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM inventory WHERE status='Sold' AND tenant_id = ?", (tid,)
+    )
+    sold_count = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM inventory WHERE tenant_id = ?", (tid,)
+    )
+    total_count = cursor.fetchone()[0]
+
+    conn.close()
+
+    bt = get_business_type_config("clothing")
+    tenant_name = "Clothing Demo (Sandbox)"
+
+    return render_template(
+        "dashboard.html",
+        inventory=inventory,
+        available_count=available_count,
+        sold_count=sold_count,
+        total_count=total_count,
+        tenants=[],
+        current_tid=tid,
+        allow_tenant_switching=False,
+        tenant_name=tenant_name,
+        bt=bt,
+        is_sandbox=True,
+    )
+
+# ---------------------------------------------------------------
+# STORE-SAAS — Royal Home preview
+# ---------------------------------------------------------------
+@app.route("/royal-home")
+def royal_home_preview():
+    # Royal Home storefront preview — accessible from the SaaS landing page
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT *
+        FROM inventory
+        WHERE status='Available'
+          AND tenant_id = 1
+        ORDER BY id DESC
+        LIMIT 12
+    """)
+    inventory = cursor.fetchall()
+    conn.close()
+    return render_template("index.html", inventory=inventory)
+
+
+@app.route("/royal-home/dashboard")
+@login_required
+def royal_home_dashboard_preview():
+    if current_tenant_id() != 1:
+        flash("You must be logged in as the Royal Home owner to view this.")
+        return redirect("/")
+    return redirect("/dashboard")
+
+
 @app.route("/demo-logout")
 def demo_logout():
     session.pop("demo_logged_in", None)
-    # If an admin is logged in, restore their tenant context
+    session.pop("demo_admin_logged_in", None)     # ← also clear sandbox session
     if session.get("logged_in"):
         set_tenant(1)
     else:
         session.pop("tenant_id", None)
+
+    if IS_SAAS_SITE:
+        return redirect("/store-saas")
     return redirect("/business-demo")
 
 # ---------------------------------------------------------------

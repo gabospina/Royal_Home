@@ -15,6 +15,15 @@
 <body>
 
 <div class="container">
+    {% if is_sandbox %}
+    <div class="sandbox-banner">
+        <div class="sandbox-banner-icon" aria-hidden="true">🎬</div>
+        <div class="sandbox-banner-content">
+            <strong>Sandbox Demo Environment</strong>
+            <p>You're viewing the interactive demo. Any changes you make are <strong>temporary</strong> and <strong>visible only to other demo users</strong>. This sandbox resets periodically. <strong>Do not upload personal, sensitive, or offensive content.</strong></p>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Flash messages -->
     {% with messages = get_flashed_messages() %}

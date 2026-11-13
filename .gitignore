@@ -77,3 +77,10 @@ comments*.txt
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# =============================================================
+# sotre-saas
+# =============================================================
+
+!static/images/saas_hero/
+!static/images/saas_hero/**

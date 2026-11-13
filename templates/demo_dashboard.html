@@ -687,6 +687,66 @@
 
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- Demo page footer with hidden "Reserved" sandbox access      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<footer class="demo-footer">
+    <p>© 2026 Store-SaaS · Demonstration Platform.
+        <a href="#" id="sandboxReservedLink" class="hidden-link" title="">Reserved</a>
+    </p>
+</footer>
+
+<!-- Sandbox login modal -->
+<div id="sandboxLoginModal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="sandboxTitle">
+    <div class="modal-content">
+        <button type="button" class="modal-close" aria-label="Close" onclick="closeSandboxLogin()">×</button>
+        <h2 id="sandboxTitle">Manager Access</h2>
+        <p class="modal-subtitle">For interactive demo access.</p>
+        <form method="POST" action="/demo-admin-login">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="sandboxUser">Username</label>
+            <input type="text" id="sandboxUser" name="username" required autocomplete="username">
+            <label for="sandboxPass">Password</label>
+            <input type="password" id="sandboxPass" name="password" required autocomplete="current-password">
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" onclick="closeSandboxLogin()">Cancel</button>
+                <button type="submit" class="confirm-btn">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    var modal = document.getElementById("sandboxLoginModal");
+    var link = document.getElementById("sandboxReservedLink");
+    if (!modal || !link) return;
+
+    link.addEventListener("click", function (e) {
+        e.preventDefault();
+        modal.style.display = "flex";
+        document.body.classList.add("modal-open");
+        var first = modal.querySelector("input");
+        if (first) first.focus();
+    });
+
+    window.closeSandboxLogin = function () {
+        modal.style.display = "none";
+        document.body.classList.remove("modal-open");
+    };
+
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) window.closeSandboxLogin();
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.style.display === "flex") {
+            window.closeSandboxLogin();
+        }
+    });
+})();
+</script>
+
 </body>
 
 </html>
