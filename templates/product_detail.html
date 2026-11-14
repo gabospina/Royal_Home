@@ -35,6 +35,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
+<!-- JSON-LD Structured Data for Google -->
+{% if local_schema %}
+<script type="application/ld+json">
+{{ local_schema|tojson }}
+</script>
+{% endif %}
+
+{% if product_schema %}
+<script type="application/ld+json">
+{{ product_schema|tojson }}
+</script>
+{% endif %}
+
 <body>
 
 <header class="product-header">

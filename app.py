@@ -130,7 +130,11 @@ csrf = CSRFProtect(app)
 @app.before_request
 def _enforce_site_mode():
     path = request.path
-
+    
+    # Always allow SEO routes (sitemap, robots)
+    if path in ("/sitemap.xml", "/robots.txt"):
+        return None
+    
     # Static files, API endpoints, and Chrome devtools check are always allowed
     if (path.startswith("/static/")
         or path.startswith("/api/")
@@ -773,6 +777,171 @@ BUSINESS_TYPE_CONFIG = {
     },
 }
 
+# ---------------------------------------------------------------
+# MARKETING — Per-tenant business information (for Google schema)
+# ---------------------------------------------------------------
+# Used in JSON-LD structured data that Google reads for local search
+# and Maps. Update these when each tenant's info changes.
+#
+# NOTE: For now, hardcoded per tenant. Future: move to `tenants` DB table.
+
+TENANT_BUSINESS_INFO = {
+    1: {
+        "name": "The Royal Home",
+        "alternate_name": "Discount Appliance Outlet",
+        "description": "Discount appliance outlet serving the West Island of Montreal. Refrigerators, washers, dryers, ovens and more.",
+        "address": {
+            "street": "3237 Sources Blvd",
+            "city": "Dollard-des-Ormeaux",
+            "region": "QC",
+            "postal_code": "H9B 1Z6",
+            "country": "CA",
+        },
+        "geo": {"lat": 45.4842, "lng": -73.7883},
+        "phone": "+18777756257",
+        "email": "info@theroyalhome.ca",
+        "hours": [
+            ("Monday",    "09:00", "18:00"),
+            ("Tuesday",   "09:00", "18:00"),
+            ("Wednesday", "09:00", "18:00"),
+            ("Thursday",  "09:00", "18:00"),
+            ("Friday",    "09:00", "18:00"),
+            ("Saturday",  "09:00", "18:00"),
+        ],  # closed Sunday
+        "price_range": "$$",
+        "category": "HomeGoodsStore",
+        "maps_url": "https://www.google.com/maps?q=3237+Sources+Blvd,+Dollard-des-Ormeaux,+QC+H9B+1Z6",
+    },
+    2: {
+        "name": "Clothing Demo Boutique",
+        "alternate_name": "Store-SaaS Clothing Demo",
+        "description": "Sample clothing boutique — demonstration environment for Store-SaaS.",
+        "address": {
+            "street": "100 Demo Street",
+            "city": "Montreal",
+            "region": "QC",
+            "postal_code": "H1A 1A1",
+            "country": "CA",
+        },
+        "geo": {"lat": 45.5019, "lng": -73.5674},
+        "phone": "+15145551234",
+        "email": "demo@example.com",
+        "hours": [
+            ("Monday",    "10:00", "18:00"),
+            ("Tuesday",   "10:00", "18:00"),
+            ("Wednesday", "10:00", "18:00"),
+            ("Thursday",  "10:00", "18:00"),
+            ("Friday",    "10:00", "18:00"),
+            ("Saturday",  "10:00", "17:00"),
+        ],
+        "price_range": "$$",
+        "category": "ClothingStore",
+        "maps_url": "https://www.google.com/maps?q=Montreal,+QC",
+    },
+}
+
+
+def get_tenant_business_info(tenant_id):
+    """Return business info dict for a tenant, or None if not configured."""
+    return TENANT_BUSINESS_INFO.get(int(tenant_id))
+
+
+def build_local_business_schema(tenant_id, base_url):
+    """
+    Build a JSON-LD LocalBusiness schema dict for Google.
+    Returns empty dict if tenant has no business info.
+    """
+    info = get_tenant_business_info(tenant_id)
+    if not info:
+        return {}
+
+    addr = info["address"]
+    geo = info["geo"]
+
+    # Build opening hours specification
+    opening_hours = []
+    for day, open_t, close_t in info.get("hours", []):
+        opening_hours.append({
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "https://schema.org/" + day,
+            "opens": open_t,
+            "closes": close_t,
+        })
+
+    return {
+        "@context": "https://schema.org",
+        "@type": info.get("category", "LocalBusiness"),
+        "name": info["name"],
+        "alternateName": info.get("alternate_name", ""),
+        "description": info.get("description", ""),
+        "url": base_url,
+        "image": f"{base_url}/static/images/store.jpg",
+        "telephone": info.get("phone", ""),
+        "email": info.get("email", ""),
+        "priceRange": info.get("price_range", "$$"),
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": addr["street"],
+            "addressLocality": addr["city"],
+            "addressRegion": addr["region"],
+            "postalCode": addr["postal_code"],
+            "addressCountry": addr["country"],
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": geo["lat"],
+            "longitude": geo["lng"],
+        },
+        "openingHoursSpecification": opening_hours,
+        "hasMap": info.get("maps_url", ""),
+    }
+
+
+def build_product_schema(item, tenant_id, base_url, photos):
+    """
+    Build a JSON-LD Product schema dict for a single product.
+    """
+    info = get_tenant_business_info(tenant_id)
+
+    # Product image (first photo, or fallback)
+    if photos and photos[0][1]:
+        image_url = f"{base_url}/static/images/uploads/{photos[0][1]}"
+    elif item[7] and item[7] != "no-image.png":
+        image_url = f"{base_url}/static/images/uploads/{item[7]}"
+    else:
+        image_url = f"{base_url}/static/images/no-image.png"
+
+    price = item[4] or 0
+    availability = "https://schema.org/InStock" if item[8] == "Available" else "https://schema.org/SoldOut"
+
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": item[1],
+        "image": image_url,
+        "description": f"{item[1]} available at {info['name'] if info else 'our store'}",
+        "sku": f"item-{item[0]}",
+        "url": f"{base_url}/product/{item[0]}",
+        "offers": {
+            "@type": "Offer",
+            "price": f"{float(price):.2f}",
+            "priceCurrency": "CAD",
+            "availability": availability,
+            "url": f"{base_url}/product/{item[0]}",
+            "seller": {
+                "@type": "Organization",
+                "name": info["name"] if info else "Store",
+            },
+        },
+    }
+
+    if item[2]:  # brand
+        schema["brand"] = {"@type": "Brand", "name": item[2]}
+    if item[5]:  # category
+        schema["category"] = item[5]
+
+    return schema
+
 # If a tenant has no business_type or an unknown one, fall back to appliance.
 DEFAULT_BUSINESS_TYPE = "appliance"
 
@@ -935,7 +1104,7 @@ def store_saas_home():
 
 
 def _render_royal_home_storefront():
-    """Royal Home appliance storefront."""
+    """Royal Home appliance storefront (Royal Home mode only)."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -948,13 +1117,18 @@ def _render_royal_home_storefront():
     """)
     inventory = cursor.fetchall()
     conn.close()
+
+    base_url = get_base_url()
+    local_schema = build_local_business_schema(1, base_url)
+
     return render_template(
         "index.html",
         inventory=inventory,
-        whatsapp_number=get_tenant_whatsapp(1),        # ← add
-        tenant_name="Royal Home",                       # ← add
+        whatsapp_number=get_tenant_whatsapp(1),
+        tenant_name="Royal Home",
+        local_schema=local_schema,
+        base_url=base_url,
     )
-
 
 @app.route("/login", methods=["GET", "POST"])
 @limiter.limit("5 per minute")
@@ -2183,20 +2357,10 @@ def demo_admin():
 # ---------------------------------------------------------------
 @app.route("/royal-home")
 def royal_home_preview():
-    # Royal Home storefront preview — accessible from the SaaS landing page
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT *
-        FROM inventory
-        WHERE status='Available'
-          AND tenant_id = 1
-        ORDER BY id DESC
-        LIMIT 12
-    """)
-    inventory = cursor.fetchall()
-    conn.close()
-    return render_template("index.html", inventory=inventory)
+    """Royal Home storefront preview — accessible from the SaaS landing page."""
+    # Reuse the same renderer as the Royal Home mode's `/` route
+    # so both get the same schema, WhatsApp config, and inventory list.
+    return _render_royal_home_storefront()
 
 
 @app.route("/product/<int:item_id>")
@@ -2261,6 +2425,10 @@ def product_detail(item_id):
 
     canonical_url = f"{base_url}/product/{item_id}"
 
+    # ── NEW: JSON-LD schemas ──
+    local_schema = build_local_business_schema(tenant_id, base_url)
+    product_schema = build_product_schema(item, tenant_id, base_url, photos)
+
     return render_template(
         "product_detail.html",
         item=item,
@@ -2271,6 +2439,8 @@ def product_detail(item_id):
         og_description=og_description,
         og_image=og_image,
         canonical_url=canonical_url,
+        local_schema=local_schema,
+        product_schema=product_schema,
     )
 
 
@@ -2315,6 +2485,84 @@ def ratelimit_handler(e):
         else f"<h1>Too Many Requests</h1><p>Please slow down. Try again in a minute.</p>"
     ), 429
 
+
+# ---------------------------------------------------------------
+# MARKETING — sitemap.xml and robots.txt for Google crawlers
+# ---------------------------------------------------------------
+@app.route("/sitemap.xml")
+def sitemap():
+    """Dynamic sitemap listing all products + main pages."""
+    base_url = get_base_url()
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # All available products (any tenant)
+    cursor.execute("""
+        SELECT id, status FROM inventory
+        WHERE status = 'Available'
+        ORDER BY id DESC
+        LIMIT 5000
+    """)
+    products = cursor.fetchall()
+
+    # All active tenants
+    cursor.execute(
+        "SELECT id, slug FROM tenants WHERE is_active = 1 ORDER BY id"
+    )
+    tenants = cursor.fetchall()
+
+    conn.close()
+
+    # Build XML manually (simple + reliable, no jinja template needed)
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+    # Homepage
+    lines.append(f"  <url><loc>{base_url}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>")
+
+    # Tenant storefronts
+    for tenant_id, slug in tenants:
+        lines.append(f"  <url><loc>{base_url}/royal-home</loc><changefreq>daily</changefreq><priority>0.9</priority></url>")
+        break  # only one public storefront route for now
+
+    # All product pages
+    for product_id, _ in products:
+        lines.append(f"  <url><loc>{base_url}/product/{product_id}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>")
+
+    lines.append('</urlset>')
+
+    return "\n".join(lines), 200, {"Content-Type": "application/xml"}
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    """Robots.txt — allows public pages, blocks admin/demo routes."""
+    base_url = get_base_url()
+
+    content = f"""User-agent: *
+Allow: /
+Allow: /product/
+Allow: /royal-home
+Disallow: /dashboard
+Disallow: /inventory-list
+Disallow: /sold-inventory
+Disallow: /edit_inventory/
+Disallow: /upload
+Disallow: /delete/
+Disallow: /update/
+Disallow: /login
+Disallow: /logout
+Disallow: /demo-login
+Disallow: /demo-dashboard
+Disallow: /demo-admin
+Disallow: /store-saas
+Disallow: /store-login
+Disallow: /api/
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    return content, 200, {"Content-Type": "text/plain; charset=utf-8"}
 
 if __name__ == "__main__":
     # Debug mode only when FLASK_ENV is "development" AND FLASK_DEBUG is "1"

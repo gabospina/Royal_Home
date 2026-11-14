@@ -166,27 +166,126 @@
             {% endif %}
 
             {% if photos|length < max_photos %}
+            {% set remaining = max_photos - photos|length %}
 
             <form
                 method="POST"
                 action="/photo/upload/{{ item[0] }}"
                 enctype="multipart/form-data"
-                class="add-photo-form">
+                class="add-photo-form"
+                id="addPhotosForm"
+                data-remaining="{{ remaining }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <label for="new_photos">Add more photos</label>
+                <label>
+                    Add more photos
+                    <span class="photos-remaining-badge">
+                        {{ remaining }} slot{{ '' if remaining == 1 else 's' }} available
+                    </span>
+                </label>
 
-                <input
-                    type="file"
-                    id="new_photos"
-                    name="photos"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    required>
+                <div id="addPhotosDropzone" class="photo-dropzone">
+                    <input
+                        type="file"
+                        id="new_photos"
+                        name="photos"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                        required
+                        style="display:none">
+                    <p class="dropzone-hint">
+                        <strong>Drag photos here</strong><br>
+                        or <button type="button" class="dropzone-browse" onclick="document.getElementById('new_photos').click()">Browse files</button>
+                    </p>
+                    <p class="dropzone-note">
+                        JPG, PNG, or WEBP · max 8 MB each · up to {{ remaining }} at a time
+                    </p>
+                </div>
 
-                <button type="submit" class="upload-btn">Upload</button>
+                <div id="addPhotosPreview" class="photo-preview-grid"></div>
+                <p id="addPhotosWarning" class="preview-warning" style="display:none;"></p>
 
+                <button type="submit" class="upload-btn" id="addPhotosSubmit" style="display:none;">
+                    Upload <span id="addPhotosCount">0</span> photo<span id="addPhotosPlural">s</span>
+                </button>
             </form>
+
+            <script>
+            (function () {
+                var form      = document.getElementById('addPhotosForm');
+                var input     = document.getElementById('new_photos');
+                var dropzone  = document.getElementById('addPhotosDropzone');
+                var preview   = document.getElementById('addPhotosPreview');
+                var warning   = document.getElementById('addPhotosWarning');
+                var submitBtn = document.getElementById('addPhotosSubmit');
+                var countEl   = document.getElementById('addPhotosCount');
+                var pluralEl  = document.getElementById('addPhotosPlural');
+                var remaining = parseInt(form.dataset.remaining, 10) || 0;
+
+                if (!input || !dropzone || !preview) return;
+
+                function renderPreview(files) {
+                    preview.innerHTML = '';
+                    warning.style.display = 'none';
+
+                    var list = Array.prototype.slice.call(files).filter(function (f) {
+                        return f.type.startsWith('image/');
+                    });
+
+                    list.forEach(function (file) {
+                        var wrap = document.createElement('div');
+                        wrap.className = 'preview-item';
+                        var img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.onload = function () { URL.revokeObjectURL(img.src); };
+                        wrap.appendChild(img);
+                        preview.appendChild(wrap);
+                    });
+
+                    if (list.length > 0) {
+                        submitBtn.style.display = 'inline-block';
+                        countEl.textContent = list.length;
+                        pluralEl.textContent = list.length === 1 ? '' : 's';
+                    } else {
+                        submitBtn.style.display = 'none';
+                    }
+
+                    if (list.length > remaining) {
+                        warning.style.display = 'block';
+                        warning.textContent =
+                            'You selected ' + list.length + ' photos, but only ' + remaining +
+                            ' can be added. Deselect ' + (list.length - remaining) + ' before uploading.';
+                    }
+                }
+
+                input.addEventListener('change', function () {
+                    renderPreview(input.files);
+                });
+
+                ['dragenter', 'dragover'].forEach(function (evt) {
+                    dropzone.addEventListener(evt, function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropzone.classList.add('drag-active');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(function (evt) {
+                    dropzone.addEventListener(evt, function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropzone.classList.remove('drag-active');
+                    });
+                });
+
+                dropzone.addEventListener('drop', function (e) {
+                    var dt = e.dataTransfer;
+                    if (!dt || !dt.files) return;
+                    input.files = dt.files;
+                    renderPreview(dt.files);
+                });
+            })();
+            </script>
 
             {% else %}
 

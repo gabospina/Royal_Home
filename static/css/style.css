@@ -3164,3 +3164,27 @@ section.hero .hero-trust {
         justify-content: center;
     }
 }
+
+/* Uplad eight photos design */
+
+.photos-remaining-badge {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.preview-warning {
+    background: #fff3e0;
+    color: #e65100;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: 1px solid #ffd180;
+    margin-top: 10px;
+}

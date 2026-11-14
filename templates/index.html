@@ -6,50 +6,11 @@
     <title>Discount Appliance Outlet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-<!-- Google LocalBusiness Schema — helps local search + AI summaries -->
+{% if local_schema %}
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "HomeGoodsStore",
-  "name": "Discount Appliance Outlet — The Royal Home",
-  "image": "{{ url_for('static', filename='images/store.jpg', _external=True) }}",
-  "logo": "{{ url_for('static', filename='images/rh_logo.png', _external=True) }}",
-  "url": "https://royal-home.onrender.com",
-  "telephone": "+1-877-775-6257",
-  "email": "info@theroyalhome.ca",
-  "priceRange": "$$",
-  "description": "Discount appliance outlet in Dollard-des-Ormeaux, Quebec. Quality refrigerators, washers, dryers, and ovens at reduced prices. Local delivery and installation available.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "3237 Sources Blvd",
-    "addressLocality": "Dollard-des-Ormeaux",
-    "addressRegion": "QC",
-    "postalCode": "H9B 1Z6",
-    "addressCountry": "CA"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 45.4869,
-    "longitude": -73.7913
-  },
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      "opens": "09:00",
-      "closes": "18:00"
-    }
-  ],
-  "areaServed": [
-    {"@type": "City", "name": "Dollard-des-Ormeaux"},
-    {"@type": "City", "name": "Pointe-Claire"},
-    {"@type": "City", "name": "Pierrefonds"},
-    {"@type": "City", "name": "Kirkland"},
-    {"@type": "City", "name": "Beaconsfield"}
-  ],
-  "sameAs": []
-}
+{{ local_schema|tojson }}
 </script>
+{% endif %}
 
 </head>
 
