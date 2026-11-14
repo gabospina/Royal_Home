@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>{{ og_title }}</title>
+    <meta name="description" content="{{ og_description }}">
+
+    <!-- Open Graph — WhatsApp / iMessage / Facebook / LinkedIn / Slack previews -->
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="{{ og_title }}">
+    <meta property="og:description" content="{{ og_description }}">
+    <meta property="og:image" content="{{ og_image }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:site_name" content="{{ tenant[2] }}">
+    {% if item[4] %}
+    <meta property="product:price:amount" content="{{ item[4] }}">
+    <meta property="product:price:currency" content="CAD">
+    {% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ og_title }}">
+    <meta name="twitter:description" content="{{ og_description }}">
+    <meta name="twitter:image" content="{{ og_image }}">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="product-header">
+    <div class="container">
+        <a href="/" class="logo">{{ tenant[2] }}</a>
+        <a href="/" class="inventory-btn">← Back to store</a>
+    </div>
+</header>
+
+<main class="product-detail-page">
+    <div class="container">
+
+        <div class="product-layout">
+
+            <!-- ─── Gallery ─── -->
+            <div class="product-gallery">
+                {% if photos %}
+                    {% set primary = photos[0] %}
+                    <img
+                        src="{{ url_for('static', filename='images/uploads/' + primary[1]) }}"
+                        alt="{{ item[1] }}"
+                        class="product-primary-img"
+                        id="productMainImg">
+
+                    {% if photos|length > 1 %}
+                    <div class="product-thumbnails">
+                        {% for p in photos %}
+                        <img
+                            src="{{ url_for('static', filename='images/uploads/thumbs/' + p[2]) }}"
+                            alt=""
+                            class="product-thumb {% if loop.first %}active{% endif %}"
+                            data-full="{{ url_for('static', filename='images/uploads/' + p[1]) }}"
+                            onclick="swapMainImage(this)">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <img
+                        src="{{ url_for('static', filename='images/no-image.png') }}"
+                        alt="No photo available"
+                        class="product-primary-img">
+                {% endif %}
+            </div>
+
+            <!-- ─── Product Info ─── -->
+            <div class="product-info">
+
+                {% if item[5] %}
+                <span class="product-category">{{ item[5] }}</span>
+                {% endif %}
+
+                <h1>{{ item[1] }}</h1>
+
+                {% if item[8] == 'Sold' %}
+                <span class="product-status-badge sold">Sold</span>
+                {% else %}
+                <span class="product-status-badge available">Available</span>
+                {% endif %}
+
+                <p class="product-price">{{ '%.2f'|format(item[4] or 0) and '$' + '%.2f'|format(item[4] or 0) or 'Price on request' }}</p>
+
+                {% if item[2] %}<p class="product-meta"><strong>Brand:</strong> {{ item[2] }}</p>{% endif %}
+                {% if item[3] %}<p class="product-meta"><strong>Model:</strong> {{ item[3] }}</p>{% endif %}
+                {% if item[6] %}<p class="product-meta"><strong>Condition:</strong> {{ item[6] }}</p>{% endif %}
+
+                {% if item[8] != 'Sold' %}
+                <div class="product-cta">
+                    <a href="/reserve_appliance/{{ item[0] }}" class="btn btn-primary">
+                        Reserve This Product
+                    </a>
+                </div>
+                {% else %}
+                <div class="product-cta">
+                    <p class="product-unavailable">This item has been sold.</p>
+                </div>
+                {% endif %}
+
+                <!-- ─── Share Buttons ─── -->
+                <div class="share-section">
+                    <p class="share-label">Share this product</p>
+                    <div class="share-buttons">
+                        {% set share_text = "Check out this " ~ item[1] ~ " at " ~ tenant[2] ~ " — " ~ canonical_url %}
+                        <a href="https://wa.me/?text={{ share_text|urlencode }}"
+                           target="_blank" rel="noopener"
+                           class="share-btn share-whatsapp">
+                            <span>📱</span> WhatsApp
+                        </a>
+                        <button type="button"
+                                class="share-btn share-copy"
+                                onclick="copyShareLink(this, '{{ canonical_url }}')">
+                            <span>🔗</span> Copy link
+                        </button>
+                        <button type="button"
+                                class="share-btn share-native"
+                                onclick="nativeShare('{{ item[1]|e }}', '{{ canonical_url }}')"
+                                style="display:none;"
+                                id="nativeShareBtn">
+                            <span>↗️</span> Share
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- ─── Floating WhatsApp Chat Button ─── -->
+{% if whatsapp_number %}
+<a href="https://wa.me/{{ whatsapp_number|replace('+','')|replace(' ','')|replace('-','') }}?text={{ ('Hi ' ~ tenant[2] ~ ', I have a question about: ' ~ item[1] ~ ' — ' ~ canonical_url)|urlencode }}"
+   target="_blank" rel="noopener"
+   class="whatsapp-float"
+   aria-label="Chat with us on WhatsApp">
+    <span class="whatsapp-float-icon">💬</span>
+    <span class="whatsapp-float-label">Chat with us</span>
+</a>
+{% endif %}
+
+<footer class="product-footer">
+    <div class="container">
+        <p>© 2026 {{ tenant[2] }}. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+function swapMainImage(thumb) {
+    var main = document.getElementById('productMainImg');
+    if (!main) return;
+    main.src = thumb.dataset.full;
+    document.querySelectorAll('.product-thumb').forEach(function (t) {
+        t.classList.remove('active');
+    });
+    thumb.classList.add('active');
+}
+
+function copyShareLink(btn, url) {
+    navigator.clipboard.writeText(url).then(function () {
+        var original = btn.innerHTML;
+        btn.innerHTML = '<span>✓</span> Copied!';
+        setTimeout(function () { btn.innerHTML = original; }, 2000);
+    }).catch(function () {
+        prompt('Copy this link:', url);
+    });
+}
+
+function nativeShare(title, url) {
+    if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function () {});
+    }
+}
+
+// Show native share button if supported
+if (navigator.share) {
+    var btn = document.getElementById('nativeShareBtn');
+    if (btn) btn.style.display = '';
+}
+</script>
+
+</body>
+</html>

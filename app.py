@@ -153,8 +153,6 @@ def _enforce_site_mode():
         if path.startswith("/business-demo"):
             # Backward compat: /business-demo → /
             return redirect("/")
-        if path.startswith("/reserve_appliance"):
-            return redirect("/")
 
     return None
 
@@ -709,6 +707,25 @@ def verify_sandbox_credentials(username, password):
     )
 
 
+# ---------------------------------------------------------------
+# MARKETING — absolute URLs + per-tenant WhatsApp config
+# ---------------------------------------------------------------
+def get_base_url():
+    """Return the absolute base URL for OG tags and share links."""
+    explicit = os.environ.get("SITE_URL")
+    if explicit:
+        return explicit.rstrip("/")
+    return request.url_root.rstrip("/")
+
+
+def get_tenant_whatsapp(tenant_id):
+    """Return the WhatsApp number for a tenant, or empty string if not configured."""
+    raw = os.environ.get(f"TENANT_{int(tenant_id)}_WHATSAPP", "").strip()
+    # Clean: strip everything except digits and leading +
+    cleaned = "".join(c for c in raw if c.isdigit() or c == "+")
+    return cleaned
+
+
 def set_tenant(tid):
     """Set the current session's tenant. Also updates session.permanent."""
     session.permanent = True
@@ -931,7 +948,12 @@ def _render_royal_home_storefront():
     """)
     inventory = cursor.fetchall()
     conn.close()
-    return render_template("index.html", inventory=inventory)
+    return render_template(
+        "index.html",
+        inventory=inventory,
+        whatsapp_number=get_tenant_whatsapp(1),        # ← add
+        tenant_name="Royal Home",                       # ← add
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -2175,6 +2197,81 @@ def royal_home_preview():
     inventory = cursor.fetchall()
     conn.close()
     return render_template("index.html", inventory=inventory)
+
+
+@app.route("/product/<int:item_id>")
+def product_detail(item_id):
+    """Shareable product page with Open Graph tags."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Load the product (any status, but Sold items show as unavailable)
+    cursor.execute("SELECT * FROM inventory WHERE id = ?", (item_id,))
+    item = cursor.fetchone()
+
+    if not item:
+        conn.close()
+        return render_template("404.html"), 404
+
+    tenant_id = item[10]
+
+    # Load tenant info
+    cursor.execute(
+        "SELECT id, slug, name, business_type FROM tenants WHERE id = ?",
+        (tenant_id,),
+    )
+    tenant = cursor.fetchone()
+    if not tenant:
+        conn.close()
+        return render_template("404.html"), 404
+
+    # Load photos
+    cursor.execute("""
+        SELECT id, filename, thumbnail, is_primary, sort_order
+        FROM item_photos
+        WHERE inventory_id = ?
+        ORDER BY is_primary DESC, sort_order ASC, id ASC
+    """, (item_id,))
+    photos = cursor.fetchall()
+
+    conn.close()
+
+    # Build OG metadata
+    base_url = get_base_url()
+    whatsapp = get_tenant_whatsapp(tenant_id)
+
+    # Primary photo for OG image
+    if photos and photos[0][1]:
+        og_image = f"{base_url}/static/images/uploads/{photos[0][1]}"
+    elif item[7] and item[7] != "no-image.png":
+        og_image = f"{base_url}/static/images/uploads/{item[7]}"
+    else:
+        og_image = f"{base_url}/static/images/no-image.png"
+
+    price_str = f"${item[4]:.2f}" if item[4] else "Price on request"
+    og_title = f"{item[1]} — {price_str} · {tenant[2]}"
+
+    desc_parts = []
+    if item[2]: desc_parts.append(item[2])          # brand
+    if item[5]: desc_parts.append(item[5])          # category
+    if item[6]: desc_parts.append(item[6])          # condition
+    og_description = f"{item[1]} available at {tenant[2]}"
+    if desc_parts:
+        og_description += " — " + " · ".join(desc_parts)
+
+    canonical_url = f"{base_url}/product/{item_id}"
+
+    return render_template(
+        "product_detail.html",
+        item=item,
+        tenant=tenant,
+        photos=photos,
+        whatsapp_number=whatsapp,
+        og_title=og_title,
+        og_description=og_description,
+        og_image=og_image,
+        canonical_url=canonical_url,
+    )
 
 
 @app.route("/royal-home/dashboard")

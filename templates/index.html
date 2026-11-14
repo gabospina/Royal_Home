@@ -162,11 +162,8 @@ Discount Appliance Outlet
             alt="{{ item[1] }}">
             <h3>{{ item[1] }}</h3>
             <p>${{ item[4] }}</p>
-            <a
-            href="/reserve_appliance/{{ item[0] }}"
-            class="inventory-btn">
-                Reserve Appliance
-            </a>
+            <a href="/product/{{ item[0] }}" class="view-details-link">View details →</a>
+            <a href="/reserve_appliance/{{ item[0] }}" class="inventory-btn"> Reserve</a>
         </div>
         {% endfor %}
     </div>
@@ -461,5 +458,15 @@ Discount Appliance Outlet
 <script
     src="{{ url_for('static', filename='js/script.js') }}">
 </script>
+
+{% if whatsapp_number %}
+<a href="https://wa.me/{{ whatsapp_number|replace('+','')|replace(' ','')|replace('-','') }}?text={{ ('Hi! I am browsing Royal Home products')|urlencode }}"
+   target="_blank" rel="noopener"
+   class="whatsapp-float"
+   aria-label="Chat with us on WhatsApp">
+    <span class="whatsapp-float-icon">💬</span>
+    <span class="whatsapp-float-label">Chat with us</span>
+</a>
+{% endif %}
 </body>
 </html>

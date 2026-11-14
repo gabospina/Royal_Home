@@ -2860,3 +2860,307 @@ section.hero .hero-trust {
     border-top: 1px solid #e5eaf0;
     margin-top: 40px;
 }
+
+/* =============================================================
+   MARKETING — Product detail page + share + WhatsApp button
+   ============================================================= */
+
+/* ─── View details link on storefront cards ─── */
+.view-details-link {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    color: #ff6600;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.view-details-link:hover {
+    text-decoration: underline;
+}
+
+/* ─── Product detail page ─── */
+.product-header {
+    background: #003366;
+    color: #fff;
+    padding: 14px 5%;
+}
+.product-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.product-header .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+.product-header .inventory-btn {
+    background: #ff6600;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.product-detail-page {
+    padding: 40px 5% 80px;
+    background: #f7f9fc;
+    min-height: 60vh;
+}
+
+.product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Gallery ─── */
+.product-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.product-primary-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border: 1px solid #e5eaf0;
+}
+.product-thumbnails {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+.product-thumb {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #e5eaf0;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+}
+.product-thumb:hover,
+.product-thumb.active {
+    border-color: #ff6600;
+}
+
+/* ─── Product info ─── */
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.product-category {
+    display: inline-block;
+    align-self: flex-start;
+    background: #003366;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.product-info h1 {
+    margin: 0;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    color: #003366;
+    line-height: 1.25;
+}
+.product-status-badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+.product-status-badge.available {
+    background: #d1fae5;
+    color: #065f46;
+}
+.product-status-badge.sold {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.product-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ff6600;
+    margin: 6px 0;
+}
+.product-meta {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+.product-meta strong {
+    color: #003366;
+    margin-right: 6px;
+}
+.product-cta {
+    margin-top: 8px;
+}
+.product-cta .btn-primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #ff6600;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+}
+.product-cta .btn-primary:hover {
+    background: #e65c00;
+    transform: translateY(-1px);
+}
+.product-unavailable {
+    color: #991b1b;
+    background: #fee2e2;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+}
+
+/* ─── Share buttons ─── */
+.share-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5eaf0;
+}
+.share-label {
+    margin: 0 0 10px;
+    font-weight: 600;
+    color: #003366;
+    font-size: 0.9rem;
+}
+.share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid #ccd4dd;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+}
+.share-btn:hover {
+    background: #f0f4fa;
+    border-color: #003366;
+}
+.share-whatsapp {
+    background: #25D366;
+    color: #fff;
+    border-color: #25D366;
+}
+.share-whatsapp:hover {
+    background: #1da851;
+    border-color: #1da851;
+    color: #fff;
+}
+.share-copy:hover {
+    color: #ff6600;
+    border-color: #ff6600;
+}
+
+/* ─── Floating WhatsApp button ─── */
+.whatsapp-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #25D366;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    z-index: 900;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.whatsapp-float:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+    color: #fff;
+}
+.whatsapp-float-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* ─── Product footer ─── */
+.product-footer {
+    text-align: center;
+    padding: 20px;
+    background: #003366;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+    .product-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 20px;
+    }
+    .product-detail-page {
+        padding: 20px 16px 60px;
+    }
+    .product-price {
+        font-size: 1.6rem;
+    }
+    .whatsapp-float {
+        bottom: 16px;
+        right: 16px;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    .whatsapp-float-label {
+        display: none;    /* icon-only on mobile */
+    }
+    .share-btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
